@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "whaledrop-book"
-  }
+  },
+  "targets": {
+    "whaledrop-book": {
+      "hosting": {
+        "dashboard": [
+          "whaledrop-dashboard"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
