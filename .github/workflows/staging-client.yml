@@ -1,0 +1,21 @@
+name: Deploy To Staging Client
+on:
+  pull_request:
+    paths:
+      - projects/client/**
+jobs:
+  build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm run build:client
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_WHALEDROP_BOOK }}'
+          projectId: whaledrop-book
+          target: client     # picked from targets.projectId.hosting key in .firebaserc
+          channelId: staging
+          expires: 3d
