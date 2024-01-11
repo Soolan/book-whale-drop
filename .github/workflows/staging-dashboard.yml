@@ -18,4 +18,4 @@ jobs:
           projectId: whaledrop-book
           target: dashboard     # picked from targets.projectId.hosting key in .firebaserc
           channelId: staging
-          expires: 4d
+          expires: 3d
