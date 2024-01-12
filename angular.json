@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dashbaord": {
+    "dashboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,27 +17,27 @@
           "standalone": false
         }
       },
-      "root": "projects/dashbaord",
-      "sourceRoot": "projects/dashbaord/src",
+      "root": "projects/dashboard",
+      "sourceRoot": "projects/dashboard/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/dashbaord",
-            "index": "projects/dashbaord/src/index.html",
-            "browser": "projects/dashbaord/src/main.ts",
+            "outputPath": "dist/dashboard",
+            "index": "projects/dashboard/src/index.html",
+            "browser": "projects/dashboard/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/dashbaord/tsconfig.app.json",
+            "tsConfig": "projects/dashboard/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/dashbaord/src/favicon.ico",
-              "projects/dashbaord/src/assets"
+              "projects/dashboard/src/favicon.ico",
+              "projects/dashboard/src/assets"
             ],
             "styles": [
-              "projects/dashbaord/src/styles.scss"
+              "projects/dashboard/src/styles.scss"
             ],
             "scripts": []
           },
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dashbaord:build:production"
+              "buildTarget": "dashboard:build:production"
             },
             "development": {
-              "buildTarget": "dashbaord:build:development"
+              "buildTarget": "dashboard:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "dashbaord:build"
+            "buildTarget": "dashboard:build"
           }
         },
         "test": {
@@ -90,14 +90,14 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/dashbaord/tsconfig.spec.json",
+            "tsConfig": "projects/dashboard/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/dashbaord/src/favicon.ico",
-              "projects/dashbaord/src/assets"
+              "projects/dashboard/src/favicon.ico",
+              "projects/dashboard/src/assets"
             ],
             "styles": [
-              "projects/dashbaord/src/styles.scss"
+              "projects/dashboard/src/styles.scss"
             ],
             "scripts": []
           }
@@ -237,6 +237,6 @@
           }
         }
       }
-    }
+    },
   }
 }
