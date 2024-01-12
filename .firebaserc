@@ -7,6 +7,9 @@
       "hosting": {
         "dashboard": [
           "whaledrop-dashboard"
+        ],
+        "client": [
+          "whaledrop-client"
         ]
       }
     }

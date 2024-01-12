@@ -15,6 +15,18 @@
       "frameworksBackend": {
         "region": "us-central1"
       }
+    },
+    {
+      "target": "client",
+      "public": "dist/client/browser",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "frameworksBackend": {
+        "region": "us-central1"
+      }
     }
   ],
   "emulators": {
