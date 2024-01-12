@@ -1,21 +1,6 @@
 {
   "name": "whale-drop",
   "version": "1.0.0",
-  "description": "An open source repository for AR app. Part 1 of a book series on Angular, Firebase, and Open Source.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Soolan/book-whale-drop"
-  },
-  "author": {
-    "name": "Sohail Salehi",
-    "email": "drink@wtf.pub",
-    "url": "https://wtf.pub"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Soolan/book-whale-drop/issues"
-  },
-  "homepage": "https://github.com/Soolan/book-whale-drop#readme",
   "scripts": {
     "ng": "ng",
     "start:dashboard": "ng serve --project=dashboard --open --port 4200",
@@ -57,5 +42,21 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^17.0.0",
     "typescript": "~5.2.2"
-  }
+  },
+
+  "description": "An open source repository for AR app. Part 1 of a book series on Angular, Firebase, and Open Source.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Soolan/book-whale-drop"
+  },
+  "author": {
+    "name": "Sohail Salehi Mava",
+    "email": "drink@wtf.pub",
+    "url": "https://wtf.pub"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Soolan/book-whale-drop/issues"
+  },
+  "homepage": "https://github.com/Soolan/book-whale-drop#readme"
 }

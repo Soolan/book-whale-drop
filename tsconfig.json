@@ -12,7 +12,11 @@
         "./dist/lib"
       ],
       "shared": [
+        "./dist/shared",
         "./dist/shared"
+      ],
+      "why-lib": [
+        "./dist/why-lib"
       ]
     },
     "noImplicitReturns": true,
