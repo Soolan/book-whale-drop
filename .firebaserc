@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "whaledrop-book"
+  },
+  "targets": {
+    "whaledrop-book": {
+      "hosting": {
+        "dashboard": [
+          "whaledrop-dashboard"
+        ],
+        "client": [
+          "whaledrop-client"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
