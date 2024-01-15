@@ -37,6 +37,7 @@
               "projects/dashboard/src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/dashboard/src/styles.scss",
               "projects/shared/src/lib/styles/whaledrop-theme.scss"
             ],
@@ -98,6 +99,7 @@
               "projects/dashboard/src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/dashboard/src/styles.scss"
             ],
             "scripts": []
@@ -139,6 +141,7 @@
               "projects/client/src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/client/src/styles.scss",
               "projects/shared/src/lib/styles/whaledrop-theme.scss"
             ],
@@ -200,6 +203,7 @@
               "projects/client/src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/client/src/styles.scss"
             ],
             "scripts": []
