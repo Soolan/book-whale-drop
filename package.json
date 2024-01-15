@@ -3,18 +3,25 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start:dashboard": "ng serve --project=dashboard --open --port 4200",
+    "build:dashboard": "ng build --project=dashboard",
+    "test:dashboard": "ng test --project=dashboard",
+    "watch:dashboard": "ng build --project=dashboard --watch --configuration development",
+
+    "start:client": "ng serve --project=client --open --port 4201",
+    "build:client": "ng build --project=client",
+    "test:client": "ng test --project=client",
+    "watch:client": "ng build --project=client --watch --configuration development"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.0",
+    "@angular/cdk": "^17.0.5",
     "@angular/common": "^17.0.0",
     "@angular/compiler": "^17.0.0",
     "@angular/core": "^17.0.0",
     "@angular/forms": "^17.0.0",
+    "@angular/material": "^17.0.5",
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
@@ -35,5 +42,20 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^17.0.0",
     "typescript": "~5.2.2"
-  }
+  },
+  "description": "An open source repository for AR app. Part 1 of a book series on Angular, Firebase, and Open Source.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Soolan/book-whale-drop"
+  },
+  "author": {
+    "name": "Sohail Salehi Mava",
+    "email": "drink@wtf.pub",
+    "url": "https://wtf.pub"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Soolan/book-whale-drop/issues"
+  },
+  "homepage": "https://github.com/Soolan/book-whale-drop#readme"
 }
