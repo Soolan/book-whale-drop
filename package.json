@@ -1,13 +1,12 @@
 {
   "name": "whale-drop",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start:dashboard": "ng serve --project=dashboard --open --port 4200",
     "build:dashboard": "ng build --project=dashboard",
     "test:dashboard": "ng test --project=dashboard",
     "watch:dashboard": "ng build --project=dashboard --watch --configuration development",
-
     "start:client": "ng serve --project=client --open --port 4201",
     "build:client": "ng build --project=client",
     "test:client": "ng test --project=client",
