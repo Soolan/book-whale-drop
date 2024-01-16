@@ -1,17 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LandingComponent} from './landing/landing.component';
+import {WhaleComponent} from './whale/whale.component';
 
 const routes: Routes = [
   {path: '', component: LandingComponent},
-  {
-    path: 'whales',
-    loadChildren: () => import('./whales/whales.module').then(m => m.WhalesModule)
-  },
+  {path: ':whaleId', component: WhaleComponent}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class WhalesRoutingModule { }
