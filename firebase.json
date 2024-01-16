@@ -14,7 +14,13 @@
       ],
       "frameworksBackend": {
         "region": "us-central1"
-      }
+      },
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     },
     {
       "target": "client",
@@ -26,7 +32,13 @@
       ],
       "frameworksBackend": {
         "region": "us-central1"
-      }
+      },
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   ],
   "emulators": {
