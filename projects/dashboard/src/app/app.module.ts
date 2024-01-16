@@ -10,6 +10,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { WhaleModule } from './whale/whale.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    WhaleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
