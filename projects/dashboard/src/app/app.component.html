@@ -3,11 +3,17 @@
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                [mode]="(isHandset$ | async) ? 'over' : 'side'"
                [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
+    <mat-toolbar>
+      <span>Whale Drop</span>
+      <span class="logo"></span>
+    </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      @for (option of menu.options; track option.label) {
+        <button mat-flat-button class="mat-list-item" [routerLink]="option.route" routerLinkActive="active">
+          <mat-icon>{{option.icon}}</mat-icon>
+          <span>{{option.label}}</span>
+        </button>
+      }
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

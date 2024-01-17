@@ -5,7 +5,7 @@ import {WhaleComponent} from './whale/whale.component';
 
 const routes: Routes = [
   {path: '', component: LandingComponent},
-  {path: ':whaleId', component: WhaleComponent}
+  {path: ':whaleId', component: WhaleComponent},
 ];
 
 @NgModule({
