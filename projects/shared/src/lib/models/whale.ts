@@ -4,7 +4,8 @@ export interface Whale {
   source: Coordinate;
   destination: Coordinate;
   altitude: number;
-  cruisingSpeed: number;
+  speed: number;
+  seen: number
   timestamps: Timestamps;
 }
 
