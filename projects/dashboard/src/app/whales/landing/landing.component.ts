@@ -1,11 +1,11 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import { MatTable } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { LandingDataSource } from './landing-datasource';
+import {AfterViewInit,  Component, ElementRef, ViewChild} from '@angular/core';
+import {MatTable} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {LandingDataSource} from './landing-datasource';
 import {Whale} from '../../../../../shared/src/lib/models/whale';
 import {EXPAND_COLLAPSE_ANIMATION} from '../../../../../shared/src/lib/constants/animations';
-import * as L from 'leaflet';
+import {MapService} from '../../../../../shared/src/lib/services/map.service';
 
 @Component({
   selector: 'app-landing',
@@ -17,17 +17,30 @@ export class LandingComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Whale>;
-  @ViewChild('map', { static: true }) mapContainer!: ElementRef;
+  @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   dataSource = new LandingDataSource();
 
   displayedColumns = ['name', 'description', 'speed', 'seen', 'actions'];
   expandedWhale!: Whale | null;
 
+  constructor(private mapService: MapService) {
+  }
+
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;
-    this.initMap();
+  }
+
+  toggle(whale: Whale) {
+    this.expandedWhale = this.expandedWhale === whale ? null : whale;
+    if (this.expandedWhale) {
+      this.mapService.initMap(this.mapContainer);
+      this.mapService.addMarkers({
+        source: this.expandedWhale.source,
+        destination: this.expandedWhale.destination,
+      });
+    }
   }
 }
