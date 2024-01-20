@@ -26,8 +26,12 @@
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let whale" [attr.colspan]="displayedColumns.length">
         <div [@detailExpand]="whale == expandedWhale ? 'expanded' : 'collapsed'">
-          <div class="details">
-            <div class="map" #map></div>
+          <div  class="details">
+            <div> Source: {{whale.path[0].latitude}}, {{whale.path[0].longitude}}</div>
+            <div> Destination: {{whale.path[1].latitude}}, {{whale.path[1].longitude}}</div>
+            <div> Created: {{whale.timestamps.createdAt | date: 'medium' }} </div>
+            <div> Updated: {{whale.timestamps.updatedAt | date: 'medium' }} </div>
+            <div>  {{whale.timestamps.deletedAt > 0 ? 'Inactive' : 'Active'}} </div>
           </div>
         </div>
       </td>
@@ -37,7 +41,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"
         class="row"
         [class.expanded-row]="expandedWhale === row"
-        (click)="toggle(row)">
+        (click)="expandedWhale = expandedWhale === row ? null : row">
     </tr>
     <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
 
