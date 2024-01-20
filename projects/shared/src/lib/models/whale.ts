@@ -1,11 +1,14 @@
+import {WhaleSize} from '../enums/whale-size';
+
 export interface Whale {
   name: string;
+  size: WhaleSize;
   description: string;
-  source: Coordinate;
-  destination: Coordinate;
   altitude: number;
   speed: number;
-  seen: number
+  views: number;
+  path: Coordinate[];
+  lastSeen: Coordinate;
   timestamps: Timestamps;
 }
 

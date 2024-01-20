@@ -9,7 +9,12 @@ export class MapService {
   private map!: L.Map;
 
   initMap(mapContainer: ElementRef): void {
-    const mapOptions: L.MapOptions = {center: [0, 0], zoom: 2};
+    const mapOptions: L.MapOptions = {
+      center: [0, 0],
+      zoom: 1,
+      maxZoom: 18,  // Adjust the maxZoom as needed
+      minZoom: 1,   // Adjust the minZoom as needed
+    };
 
     this.map = L.map(mapContainer.nativeElement, mapOptions);
 
@@ -18,24 +23,25 @@ export class MapService {
     }).addTo(this.map);
   }
 
-  addMarkers(coordinates: { source: Coordinate, destination: Coordinate }): void {
-    this.map.eachLayer(layer => {
+  addMarkers(path: Coordinate[]): void {
+    // Clear previous markers
+    this.map.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
-        layer.remove();  // Clear previous markers
+        layer.remove();
       }
     });
 
-    const sourceMarker = L.marker([coordinates.source.latitude, coordinates.source.longitude])
-      .bindPopup('Source')
-      .addTo(this.map);
+    const start = 0;
+    const end = path.length - 1;
 
-    const destinationMarker = L.marker([coordinates.destination.latitude, coordinates.destination.longitude])
-      .bindPopup('Destination')
-      .addTo(this.map);
+    path.forEach((stop: Coordinate, index: number) => {
+      const label = index == start ? 'Start' : index == end ? 'End' : `Stop ${index}`;
+      L.marker([stop.latitude, stop.longitude]).bindPopup(label).addTo(this.map);
+    });
 
     const bounds = L.latLngBounds([
-      [coordinates.source.latitude, coordinates.source.longitude],
-      [coordinates.destination.latitude, coordinates.destination.longitude],
+      [path[start].latitude, path[start].longitude],
+      [path[end].latitude, path[end].longitude],
     ]);
 
     this.map.fitBounds(bounds);

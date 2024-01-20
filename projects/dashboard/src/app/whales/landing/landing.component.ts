@@ -21,7 +21,7 @@ export class LandingComponent implements AfterViewInit {
 
   dataSource = new LandingDataSource();
 
-  displayedColumns = ['name', 'description', 'speed', 'seen', 'actions'];
+  displayedColumns = ['name', 'description', 'speed', 'views', 'actions'];
   expandedWhale!: Whale | null;
 
   constructor(private mapService: MapService) {
@@ -37,10 +37,7 @@ export class LandingComponent implements AfterViewInit {
     this.expandedWhale = this.expandedWhale === whale ? null : whale;
     if (this.expandedWhale) {
       this.mapService.initMap(this.mapContainer);
-      this.mapService.addMarkers({
-        source: this.expandedWhale.source,
-        destination: this.expandedWhale.destination,
-      });
+      this.mapService.addMarkers(this.expandedWhale.path);
     }
   }
 }

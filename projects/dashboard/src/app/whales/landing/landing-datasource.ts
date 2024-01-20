@@ -85,8 +85,8 @@ export class LandingDataSource extends DataSource<Whale> {
       switch (this.sort?.active) {
         case 'name': return compare(a.name, b.name, isAsc);
         case 'description': return compare(+a.description, +b.description, isAsc);
-        case 'speed': return compare(+a.seen, +b.seen, isAsc);
-        case 'seen': return compare(+a.seen, +b.seen, isAsc);
+        case 'speed': return compare(+a.speed, +b.speed, isAsc);
+        case 'views': return compare(+a.views, +b.views, isAsc);
         default: return 0;
       }
     });

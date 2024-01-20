@@ -2,23 +2,25 @@
   width: 100%;
 }
 
-tr.example-detail-row {
+tr.detail-row {
   height: 0;
 }
 
-tr.example-element-row:not(.example-expanded-row):hover {
+tr.row:not(.expanded-row):hover {
   background: whitesmoke;
 }
 
-tr.example-element-row:not(.example-expanded-row):active {
-  background: #efefef;
+tr.row:not(.expanded-row):active {
+  background: whitesmoke;
 }
 
-.example-element-row td {
+.row td {
   border-bottom-width: 0;
 }
 
-.example-element-detail {
-  overflow: hidden;
-  display: flex;
+.map {
+  width: 100%;
+  height: 0;
+  padding-bottom: 35%;
 }
+
