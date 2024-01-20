@@ -17,7 +17,7 @@ export class LandingComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Whale>;
-  @ViewChild('map', {static: false}) mapContainer!: ElementRef;
+  // @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   dataSource = new LandingDataSource();
 
@@ -36,7 +36,9 @@ export class LandingComponent implements AfterViewInit {
   toggle(whale: Whale) {
     this.expandedWhale = this.expandedWhale === whale ? null : whale;
     if (this.expandedWhale) {
-      this.mapService.initMap(this.mapContainer);
+      const id = `map-${whale.timestamps.createdAt}`;
+      const mapContainer = new ElementRef(document.getElementById(id));
+      this.mapService.initMap(mapContainer);
       this.mapService.addMarkers(this.expandedWhale.path);
     }
   }

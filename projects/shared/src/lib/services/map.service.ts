@@ -33,10 +33,17 @@ export class MapService {
 
     const start = 0;
     const end = path.length - 1;
+    const greenIcon = L.icon({
+      iconUrl: 'assets/whale-flying.png',
+      iconSize:     [64, 64], // size of the icon
+      shadowSize:   [20, 64], // size of the shadow
+      iconAnchor:   [22, 64], // point of the icon which will correspond to marker's location
+      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+    });
 
     path.forEach((stop: Coordinate, index: number) => {
       const label = index == start ? 'Start' : index == end ? 'End' : `Stop ${index}`;
-      L.marker([stop.latitude, stop.longitude]).bindPopup(label).addTo(this.map);
+      L.marker([stop.latitude, stop.longitude], {icon: greenIcon}).bindPopup(label).addTo(this.map);
     });
 
     const bounds = L.latLngBounds([
