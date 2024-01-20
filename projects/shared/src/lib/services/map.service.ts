@@ -1,12 +1,20 @@
 import { Injectable, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
 import {Coordinate} from '../models/whale';
+import {
+  END_MARKER_ICON,
+  FLYING_WHALE_ICON,
+  RETIRED_WHALE_ICON,
+  START_MARKER_ICON,
+  STEP_MARKER_ICON
+} from '@shared-constants/markers';
+import {IconOptions} from 'leaflet';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
-  private map!: L.Map;
+  map!: L.Map;
 
   initMap(mapContainer: ElementRef): void {
     const mapOptions: L.MapOptions = {
@@ -33,17 +41,15 @@ export class MapService {
 
     const start = 0;
     const end = path.length - 1;
-    const greenIcon = L.icon({
-      iconUrl: 'assets/whale-flying.png',
-      iconSize:     [64, 64], // size of the icon
-      shadowSize:   [20, 64], // size of the shadow
-      iconAnchor:   [22, 64], // point of the icon which will correspond to marker's location
-      popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-    });
 
-    path.forEach((stop: Coordinate, index: number) => {
-      const label = index == start ? 'Start' : index == end ? 'End' : `Stop ${index}`;
-      L.marker([stop.latitude, stop.longitude], {icon: greenIcon}).bindPopup(label).addTo(this.map);
+    path.forEach((marker: Coordinate, index: number) => {
+      const popup = index == start ? 'Start' : index == end ? 'End' : `Stop ${index}`;
+      const iconOptions: IconOptions =
+        index == start ? START_MARKER_ICON : index == end ? END_MARKER_ICON : STEP_MARKER_ICON;
+      const icon = L.icon(iconOptions);
+      L.marker([marker.latitude, marker.longitude], {icon: icon})
+        .bindPopup(popup)
+        .addTo(this.map);
     });
 
     const bounds = L.latLngBounds([
@@ -52,5 +58,10 @@ export class MapService {
     ]);
 
     this.map.fitBounds(bounds);
+  }
+
+  addWhaleMarker(lastSeen: Coordinate, isActive: boolean): void {
+    const icon = L.icon(isActive ? FLYING_WHALE_ICON : RETIRED_WHALE_ICON);
+    L.marker([lastSeen.latitude, lastSeen.longitude], {icon: icon}).addTo(this.map);
   }
 }

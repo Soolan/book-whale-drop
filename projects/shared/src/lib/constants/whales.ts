@@ -9,6 +9,8 @@ export const NEW_WHALE = {
   views: 0,
   path: [
     { longitude: 180, latitude: 0},
+    { longitude: 100, latitude: 0},
+    { longitude: -20, latitude: 0},
     { longitude: -180, latitude: 0}
   ],
   lastSeen: {longitude: 180,latitude: 0},

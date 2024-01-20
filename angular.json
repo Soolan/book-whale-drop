@@ -37,7 +37,7 @@
               "projects/dashboard/src/assets",
               {
                 "glob": "**/*",
-                "input": "projects/shared/src/lib/images/",
+                "input": "projects/shared/src/lib/images",
                 "output": "/assets/"
               }
             ],

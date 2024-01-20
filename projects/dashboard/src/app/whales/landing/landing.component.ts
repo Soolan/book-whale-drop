@@ -3,9 +3,9 @@ import {MatTable} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {LandingDataSource} from './landing-datasource';
-import {Whale} from '../../../../../shared/src/lib/models/whale';
-import {EXPAND_COLLAPSE_ANIMATION} from '../../../../../shared/src/lib/constants/animations';
-import {MapService} from '../../../../../shared/src/lib/services/map.service';
+import {Whale} from '@shared-models/whale';
+import {EXPAND_COLLAPSE_ANIMATION} from '@shared-constants/animations';
+import {MapService} from '@shared-services/map.service';
 
 @Component({
   selector: 'app-landing',
@@ -17,7 +17,6 @@ export class LandingComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Whale>;
-  // @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   dataSource = new LandingDataSource();
 
@@ -40,6 +39,8 @@ export class LandingComponent implements AfterViewInit {
       const mapContainer = new ElementRef(document.getElementById(id));
       this.mapService.initMap(mapContainer);
       this.mapService.addMarkers(this.expandedWhale.path);
+      const isActive = this.expandedWhale.timestamps.deletedAt > 0;
+      this.mapService.addWhaleMarker(this.expandedWhale.lastSeen, isActive);
     }
   }
 }
