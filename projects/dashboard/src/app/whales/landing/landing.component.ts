@@ -38,9 +38,10 @@ export class LandingComponent implements AfterViewInit {
       const id = `map-${whale.timestamps.createdAt}`;
       const mapContainer = new ElementRef(document.getElementById(id));
       this.mapService.initMap(mapContainer);
-      this.mapService.addMarkers(this.expandedWhale.path);
-      const isActive = this.expandedWhale.timestamps.deletedAt > 0;
-      this.mapService.addWhaleMarker(this.expandedWhale.lastSeen, isActive);
+      this.mapService.addPathMarkers(this.expandedWhale.path);
+      this.mapService.setPolylines(this.expandedWhale.path, this.expandedWhale.completedSteps);
+      const isActive = this.expandedWhale.timestamps.deletedAt == 0;
+      this.mapService.addWhaleMarker(this.expandedWhale, isActive);
     }
   }
 }

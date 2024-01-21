@@ -45,7 +45,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "projects/dashboard/src/styles.scss",
               "projects/shared/src/lib/styles/whaledrop-theme.scss",
-              "node_modules/leaflet/dist/leaflet.css"
+              "./node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": []
           },
@@ -144,7 +144,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/client/src/favicon.ico",
-              "projects/client/src/assets"
+              "projects/client/src/assets",
+              {
+                "glob": "**/*",
+                "input": "projects/shared/src/lib/images",
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",

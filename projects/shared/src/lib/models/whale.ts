@@ -9,12 +9,14 @@ export interface Whale {
   views: number;
   path: Coordinate[];
   lastSeen: Coordinate;
+  completedSteps: number;
   timestamps: Timestamps;
 }
 
 export interface Coordinate {
-  longitude: number;
   latitude: number;
+  longitude: number;
+  locationName?: string;
 }
 
 export interface Timestamps {
