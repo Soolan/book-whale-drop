@@ -4,10 +4,33 @@
 
 .sidenav {
   width: 200px;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
+  .mat-toolbar {
+    background: inherit;
+    .logo {
+      background: url("../../../shared/src/lib/images/whaledrop-logo.png") center/contain no-repeat;
+      margin-left: 1em;
+      width: 512px;
+      height: 512px;
+    }
+  }
+  .mat-list-item {
+    padding-left: 2em;
+    text-align: left;
+    opacity: 0.7;
+    width: 100%;
+    height: 3em;
+    display: block;
+    text-decoration: none;
+    mat-icon { font-size: larger;}
+  }
+  .mat-list-item:hover { opacity: 0.8; }
+  .active {
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.05);
+    opacity: 1;
+  }
 }
 
 .mat-toolbar.mat-primary {

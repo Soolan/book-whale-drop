@@ -15,11 +15,16 @@
     "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "baseUrl": "./",
     "paths": {
-      "shared": [
-        "./dist/shared"
-      ]
+      "shared": ["./dist/shared"],
+      "@shared-components/*": ["projects/shared/src/lib/components/*"],
+      "@shared-services/*": ["projects/shared/src/lib/services/*"],
+      "@shared-models/*": ["projects/shared/src/lib/models/*"],
+      "@shared-constants/*": ["projects/shared/src/lib/constants/*"],
+      "@shared-enums/*": ["projects/shared/src/lib/enums/*"]
     },
+
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
