@@ -19,7 +19,6 @@ export class LandingComponent implements AfterViewInit {
   @ViewChild(MatTable) table!: MatTable<Whale>;
 
   dataSource = new LandingDataSource();
-
   displayedColumns = ['name', 'description', 'speed', 'views', 'actions'];
   expandedWhale!: Whale | null;
 
@@ -29,7 +28,10 @@ export class LandingComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    this.dataSource.connect().subscribe(data => {
+      this.paginator.length = data.length;
+      this.table.dataSource = data;
+    });
   }
 
   toggle(whale: Whale) {
@@ -43,5 +45,9 @@ export class LandingComponent implements AfterViewInit {
       const isActive = this.expandedWhale.timestamps.deletedAt == 0;
       this.mapService.addWhaleMarker(this.expandedWhale, isActive);
     }
+  }
+
+  edit(id: string) {
+    console.log('edit', id);
   }
 }
