@@ -44,7 +44,7 @@ export class LandingDataSource extends DataSource<WhaleWithId> {
 
   private getData(): Observable<WhaleWithId[]> {
     const whalesCollection = collection(this.firestore, 'whales');
-    const queryWithOrder = query(whalesCollection, orderBy('timestamps.createdAt'));
+    const queryWithOrder = query(whalesCollection, orderBy('timestamps.createdAt', 'desc'));
     return from(getDocs(queryWithOrder)).pipe(
       map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WhaleWithId))),
       startWith([]) // Emit an empty array to start the stream

@@ -13,10 +13,10 @@
         <button mat-icon-button aria-label="expand whale" color="primary">
           <mat-icon>visibility</mat-icon>
         </button>
-        <button mat-icon-button aria-label="edit whale" color="accent" (click)="edit(whale.id)">
+        <button mat-icon-button aria-label="edit whale" color="accent">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button aria-label="delete whale" color="warn">
+        <button mat-icon-button aria-label="delete whale" color="warn" (click)="delete(whale.id)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>

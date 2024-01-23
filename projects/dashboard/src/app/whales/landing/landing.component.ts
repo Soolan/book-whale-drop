@@ -47,7 +47,7 @@ export class LandingComponent implements AfterViewInit {
     }
   }
 
-  edit(id: string) {
-    console.log('edit', id);
+  delete(id: string) {
+    console.log('delete', id);
   }
 }
