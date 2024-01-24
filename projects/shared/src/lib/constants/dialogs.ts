@@ -2,9 +2,9 @@ import {Dialog} from '@shared-models/dialog';
 
 export const DIALOGS: Dialog[] = [
   {
-    heading: 'Delete Document',
+    title: 'Delete Document',
     content: 'The document will be deleted. Would you like to proceed?',
-    buttons: [
+    actions: [
       {
         action: 'Ok',
         icon: 'check'  // this is the value which will be used in mat-icon
@@ -15,5 +15,6 @@ export const DIALOGS: Dialog[] = [
       },
     ]
   },
-  // add more dialogs in the future
+  // As we add more members to the enum we add more dialog data here.
+  // Each enum will have the same index as the elements in this array.
 ];

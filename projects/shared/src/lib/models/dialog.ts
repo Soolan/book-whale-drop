@@ -1,7 +1,7 @@
 export interface Dialog {
-  heading: string;
+  title: string;
   content: string;
-  buttons: Button[];
+  actions: Button[];
 }
 
 export interface Button {

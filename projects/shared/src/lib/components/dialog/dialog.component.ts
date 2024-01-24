@@ -1,12 +1,19 @@
-import { Component } from '@angular/core';
+import {Component, Inject, ViewEncapsulation} from '@angular/core';
+import {Dialog} from '@shared-models/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'lib-dialog',
-  standalone: true,
-  imports: [],
   templateUrl: './dialog.component.html',
-  styleUrl: './dialog.component.css'
+  styleUrls: ['./dialog.component.scss'],
 })
 export class DialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: Dialog,
+  ) {}
 
+  confirm(): void {
+    this.dialogRef.close(true);
+  }
 }

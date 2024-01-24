@@ -6,6 +6,12 @@ import {LandingDataSource} from './landing-datasource';
 import {Whale} from '@shared-models/whale';
 import {EXPAND_COLLAPSE_ANIMATION} from '@shared-constants/animations';
 import {MapService} from '@shared-services/map.service';
+import {DialogComponent} from '@shared-components/dialog/dialog.component';
+import {DIALOGS} from '@shared-constants/dialogs';
+import {Dialog} from '@shared-enums/dialog';
+import {MatDialog} from '@angular/material/dialog';
+import {doc, Firestore, updateDoc} from '@angular/fire/firestore';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-landing',
@@ -22,8 +28,12 @@ export class LandingComponent implements AfterViewInit {
   displayedColumns = ['name', 'description', 'speed', 'views', 'actions'];
   expandedWhale!: Whale | null;
 
-  constructor(private mapService: MapService) {
-  }
+  constructor(
+    private mapService: MapService,
+    private snackbar: MatSnackBar,
+    private firestore: Firestore,
+    public dialog: MatDialog,
+  ) { }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
@@ -48,6 +58,14 @@ export class LandingComponent implements AfterViewInit {
   }
 
   delete(id: string) {
-    console.log('delete', id);
+    const dialogRef = this.dialog.open(DialogComponent, {data: DIALOGS[Dialog.Delete]});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const whaleRef = doc(this.firestore, "whales", id);
+        updateDoc(whaleRef, {'timestamps.deletedAt': Date.now() })
+          .then(_ =>  this.snackbar.open('Document deleted successfully', '', {duration: 3000}))
+          .catch(error => this.snackbar.open(error.message, '', {duration: 6000}));
+      }
+    });
   }
 }

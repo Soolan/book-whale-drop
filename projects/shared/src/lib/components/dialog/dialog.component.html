@@ -1,1 +1,6 @@
-<p>dialog works!</p>
+<h1 mat-dialog-title>{{data.title}}</h1>
+<p mat-dialog-content>{{data.content}}</p>
+<div mat-dialog-actions>
+  <button mat-button (click)="confirm()">{{data.actions[0].action}}</button>
+  <button mat-button mat-dialog-close>{{data.actions[1].action}}</button>
+</div>
