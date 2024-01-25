@@ -6,8 +6,10 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAnalytics, provideAnalytics, ScreenTrackingService } from '@angular/fire/analytics';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getFunctions, provideFunctions } from '@angular/fire/functions';
+import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
+import {connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
+import {environment} from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -17,10 +19,29 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    provideFirebaseApp(() => initializeApp({"projectId":"whaledrop-book","appId":"1:768957392758:web:0acef684f15ac2c9f4fc57","storageBucket":"whaledrop-book.appspot.com","locationId":"us-central","apiKey":"AIzaSyDqCamkCY6JaOBux7aVIgwRfFLz9OfA66o","authDomain":"whaledrop-book.firebaseapp.com","messagingSenderId":"768957392758"})),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAnalytics(() => getAnalytics()),
-    provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions())
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.useEmulators) {
+        connectAuthEmulator(auth, 'http://localhost:9099', {disableWarnings: true});
+      }
+      return auth;
+    }),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
+      return firestore;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (environment.useEmulators) {
+        connectFunctionsEmulator(functions, 'localhost', 5001);
+      }
+      return functions;
+    }),
   ],
   providers: [
     ScreenTrackingService
