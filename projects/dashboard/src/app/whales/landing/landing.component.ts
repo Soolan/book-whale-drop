@@ -63,8 +63,8 @@ export class LandingComponent implements AfterViewInit {
       if (result) {
         const whaleRef = doc(this.firestore, "whales", id);
         updateDoc(whaleRef, {'timestamps.deletedAt': Date.now() })
-          .then(_ =>  this.snackbar.open('Document deleted successfully', '', {duration: 3000}))
-          .catch(error => this.snackbar.open(error.message, '', {duration: 6000}));
+          .then(_ =>  this.snackbar.open('Document deleted successfully', 'X', {duration: 3000}))
+          .catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
       }
     });
   }

@@ -16,6 +16,7 @@ import {connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
 import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular/fire/firestore';
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 import {environment} from '../environments/environment';
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import {environment} from '../environments/environment';
     provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {
-        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+        connectAuthEmulator(auth, 'http://localhost:9099', {disableWarnings: true});
       }
       return auth;
     }),
@@ -55,6 +56,10 @@ import {environment} from '../environments/environment';
       }
       return functions;
     }),
+    MatDialogActions,
+    MatDialogClose,
+    MatDialogContent,
+    MatDialogTitle,
   ],
   providers: [
     ScreenTrackingService,

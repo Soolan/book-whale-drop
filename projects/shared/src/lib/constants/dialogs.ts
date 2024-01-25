@@ -11,7 +11,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         action: 'Cancel',
-        icon: 'cancel'
+        icon: 'close'
       },
     ]
   },
