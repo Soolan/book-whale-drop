@@ -4,6 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAnalytics, provideAnalytics, ScreenTrackingService } from '@angular/fire/analytics';
+import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
+import {connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
+import {environment} from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -12,9 +18,34 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAnalytics(() => getAnalytics()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.useEmulators) {
+        connectAuthEmulator(auth, 'http://localhost:9099', {disableWarnings: true});
+      }
+      return auth;
+    }),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
+      return firestore;
+    }),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (environment.useEmulators) {
+        connectFunctionsEmulator(functions, 'localhost', 5001);
+      }
+      return functions;
+    }),
   ],
-  providers: [],
+  providers: [
+    ScreenTrackingService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -24,3 +24,7 @@ export interface Timestamps {
   updatedAt: number;  // during coordination updates
   deletedAt: number;  // when whale reaches the destination
 }
+
+export interface WhaleWithId extends Whale {
+  id: string;
+}

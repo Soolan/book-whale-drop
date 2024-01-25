@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<p mat-dialog-content>{{data.content}}</p>
+<div mat-dialog-actions>
+  <button mat-raised-button cdkFocusInitial color="primary" (click)="confirm()">
+    <span>{{data.actions[0].action}}</span>
+    <mat-icon>{{data.actions[0].icon}}</mat-icon>
+  </button>
+  <button mat-stroked-button mat-dialog-close>
+    <span>{{data.actions[1].action}}</span>
+    <mat-icon>{{data.actions[1].icon}}</mat-icon>
+  </button>
+</div>

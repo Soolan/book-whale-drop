@@ -90,7 +90,7 @@ export class MapService {
     });
   }
 
-// Function to calculate the direction based on coordinates
+// Calculate the direction based on coordinates
   isFacingEast(whale: Whale): boolean {
     return (whale.completedSteps + 1 < whale.path.length) ?
       whale.path[whale.completedSteps + 1].longitude > whale.path[whale.completedSteps].longitude:

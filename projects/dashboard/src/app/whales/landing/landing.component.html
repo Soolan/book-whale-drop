@@ -3,7 +3,7 @@
     @for (column of displayedColumns.slice(0,4); track column) {
       <ng-container matColumnDef="{{column}}">
         <th mat-header-cell *matHeaderCellDef> {{column | titlecase}} </th>
-        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        <td mat-cell *matCellDef="let whale"> {{whale[column]}} </td>
       </ng-container>
     }
 
@@ -16,7 +16,7 @@
         <button mat-icon-button aria-label="edit whale" color="accent">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button aria-label="delete whale" color="warn">
+        <button mat-icon-button aria-label="delete whale" color="warn" (click)="delete(whale.id)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -45,7 +45,7 @@
   </table>
 
   <mat-paginator #paginator
-      [length]="dataSource.data.length"
+      [length]="paginator?.length"
       [pageIndex]="0"
       [pageSize]="10"
       [pageSizeOptions]="[5, 10, 20]"
