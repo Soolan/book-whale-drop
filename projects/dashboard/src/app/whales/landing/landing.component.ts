@@ -10,8 +10,11 @@ import {DialogComponent} from '@shared-components/dialog/dialog.component';
 import {DIALOGS} from '@shared-constants/dialogs';
 import {Dialog} from '@shared-enums/dialog';
 import {MatDialog} from '@angular/material/dialog';
-import {doc, Firestore, updateDoc} from '@angular/fire/firestore';
+import {addDoc, collection, doc, Firestore, updateDoc} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {NEW_WHALE} from '@shared-constants/whales';
+import {Router} from '@angular/router';
+import {error} from 'ng-packagr/lib/utils/log';
 
 @Component({
   selector: 'app-landing',
@@ -33,6 +36,7 @@ export class LandingComponent implements AfterViewInit {
     private snackbar: MatSnackBar,
     private firestore: Firestore,
     public dialog: MatDialog,
+    private router: Router
   ) { }
 
   ngAfterViewInit(): void {
@@ -67,5 +71,14 @@ export class LandingComponent implements AfterViewInit {
           .catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
       }
     });
+  }
+
+  add() {
+    addDoc(collection(this.firestore, "whales"), NEW_WHALE)
+      .then(docRef => {
+        this.snackbar.open('Document added successfully', 'X', {duration: 3000});
+        this.router.navigate(['whales', docRef.id]);
+      })
+      .catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
   }
 }
