@@ -1,12 +1,14 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {doc, Firestore, getDoc, updateDoc} from '@angular/fire/firestore';
 import {ActivatedRoute} from '@angular/router';
 import {Whale} from '@shared-models/whale';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {WhaleFormService} from '@shared-services/whale-form.service';
-import {DASHBOARD_NAV} from '@shared-constants/menus';
 import {WhaleSize} from '@shared-enums/whale-size';
-import {FormControl} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
+import {DialogComponent} from '@shared-components/dialog/dialog.component';
+import {DIALOGS} from '@shared-constants/dialogs';
+import {Dialog} from '@shared-enums/dialog';
 
 @Component({
   selector: 'app-whale',
@@ -19,19 +21,19 @@ export class WhaleComponent implements OnInit {
   whale!: Whale;
 
   constructor(
+    private dialog: MatDialog,
     private firestore: Firestore,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute,
-    protected formService: WhaleFormService,
-    private cdr: ChangeDetectorRef) {
-}
+    protected formService: WhaleFormService) {
+  }
 
 // After patching the form
   ngOnInit() {
     this.reset();
     this.id = this.route.snapshot.paramMap.get('whaleId') || '';
     this.id ?
-      this.initWhale():
+      this.initWhale() :
       this.snackbar.open('Whale not found', 'X', {duration: 3000});
   }
 
@@ -44,8 +46,6 @@ export class WhaleComponent implements OnInit {
     getDoc(this.docRef).then(docSnap => {
       this.whale = docSnap.data() as Whale;
       this.patch();
-      this.cdr.detectChanges();
-
     }).catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
   }
 
@@ -60,8 +60,12 @@ export class WhaleComponent implements OnInit {
   }
 
   update() {
-    updateDoc(this.docRef, this.form.value)
-      .then(_ => this.snackbar.open('Whale updated', 'X', {duration: 3000}))
+    if (!this.form.valid) {
+      this.snackbar.open('Please resolve the issues first.', 'X', {duration: 3000});
+      return;
+    }
+    updateDoc(this.docRef,this.getDTO())
+      .then(_ => this.snackbar.open('Whale updated successfully.', 'X', {duration: 3000}))
       .catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
   }
 
@@ -70,16 +74,22 @@ export class WhaleComponent implements OnInit {
   }
 
   deleteStep(index: number) {
-    this.formService.deleteStep(index);
+    const data = DIALOGS[Dialog.Delete];
+    data.title = `Delete step ${index + 1}`;
+    data.content = 'Are you sure you want to delete this step from the path?';
+    const dialogRef = this.dialog.open(DialogComponent, {data});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.formService.deleteStep(index);
+      }
+    });
   }
 
   getDTO(): Whale {
     const data = this.form.value;
-    data.timestamps.updated_at = Date.now();
+    data.timestamps.updatedAt = Date.now();
     return data;
   }
 
-  protected readonly menu = DASHBOARD_NAV;
   protected readonly WhaleSize = WhaleSize;
-  protected readonly FormControl = FormControl;
 }

@@ -1,15 +1,18 @@
-<div class="container" [formGroup]="form" *ngIf="whale">
+<div class="container" [formGroup]="form" *ngIf="whale; else loading">
   <div class="left">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Name</mat-label>
-      <input matInput placeholder="Name" formControlName="name">
+      <input matInput #name_content placeholder="Name" formControlName="name" maxlength="50">
+      <mat-hint align="end">{{ name_content.value.length }} / 50</mat-hint>
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        Name is required.
+      </mat-error>
     </mat-form-field>
-
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput #text maxlength="300" rows="4" placeholder="Short Description" formControlName="description">
+      <textarea matInput #desc_content maxlength="300" rows="4" placeholder="Short Description" formControlName="description">
         </textarea>
-      <mat-hint align="end">{{ text.value.length }} / 300</mat-hint>
+      <mat-hint align="end">{{ desc_content.value.length }} / 300</mat-hint>
     </mat-form-field>
     <mat-divider></mat-divider>
     <div class="settings">
@@ -24,7 +27,7 @@
     </div>
     <div class="settings">
       <mat-label>Speed (km/h):</mat-label>
-      <mat-slider showTickMarks step="5" min="0" max="60" ngDefaultControl discrete formControlName="speed" >
+      <mat-slider showTickMarks step="5" min="0" max="60" ngDefaultControl discrete formControlName="speed">
         <input matSliderThumb [value]="whale.speed">
       </mat-slider>
     </div>
@@ -36,44 +39,49 @@
     </div>
   </div>
   <div class="right">
-    <button mat-flat-button (click)="addStep()" color="accent">
-      <span>Add step</span>
-      <mat-icon>add</mat-icon>
-    </button>
-    <mat-vertical-stepper #paidStepper>
-      <ng-container formArrayName="path">
-        <div *ngFor="let step of formService.pathArray.controls; index as i">
-          <mat-step [stepControl]="step">
-            <ng-container [formGroupName]="i">
-              <ng-template matStepLabel>
-                {{ step.get('locationName')?.value }}
-                <button matSuffix mat-icon-button aria-label="delete" color="accent" (click)="deleteStep(i)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </ng-template>
-              <div class="fields">
-                <mat-form-field appearance="fill">
-                  <mat-label> Latitude</mat-label>
-                  <input type="number" matInput placeholder="Latitude" formControlName="latitude">
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                  <mat-label> Longitude</mat-label>
-                  <input type="number" matInput placeholder="Longitude" formControlName="longitude">
-                </mat-form-field>
-                <mat-form-field appearance="fill">
-                  <mat-label> Location name</mat-label>
-                  <input matInput placeholder="Locations name" formControlName="locationName">
-                </mat-form-field>
-              </div>
-            </ng-container>
-          </mat-step>
-        </div>
-      </ng-container>
-    </mat-vertical-stepper>
+    <mat-tab-group dynamicHeight>
+      <mat-tab label="Steps">
+        <mat-vertical-stepper #paidStepper>
+          <ng-container formArrayName="path">
+            <div *ngFor="let step of formService.pathArray.controls; index as i">
+              <mat-step [stepControl]="step">
+                <ng-container [formGroupName]="i">
+                  <ng-template matStepLabel>
+                    {{ step.get('locationName')?.value }}
+                    <button matSuffix mat-icon-button aria-label="delete" color="accent" (click)="deleteStep(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-template>
+                  <div class="fields">
+                    <mat-form-field appearance="fill">
+                      <mat-label> Latitude</mat-label>
+                      <input type="number" matInput placeholder="Latitude" formControlName="latitude">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                      <mat-label> Longitude</mat-label>
+                      <input type="number" matInput placeholder="Longitude" formControlName="longitude">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                      <mat-label> Location name</mat-label>
+                      <input matInput placeholder="Locations name" formControlName="locationName">
+                    </mat-form-field>
+                  </div>
+                </ng-container>
+              </mat-step>
+            </div>
+          </ng-container>
+        </mat-vertical-stepper>
+        <button mat-flat-button (click)="addStep()" color="accent">
+          <span>Add step</span>
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-tab>
+      <mat-tab label="Order">Join our weekly online workshops to implement this tab.</mat-tab>
+      <mat-tab label="Map">Join our weekly online workshops to implement this tab.</mat-tab>
+    </mat-tab-group>
   </div>
   <div class="footer">
     <mat-divider></mat-divider>
-
     <div class="info">
       <p>
         <strong>Last seen: </strong>
@@ -107,3 +115,7 @@
     </div>
   </div>
 </div>
+<ng-template #loading>
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</ng-template>
+

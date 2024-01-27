@@ -17,6 +17,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatSliderModule} from '@angular/material/slider';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 
 @NgModule({
@@ -39,7 +42,10 @@ import {MatSliderModule} from '@angular/material/slider';
     MatExpansionModule,
     MatStepperModule,
     MatButtonToggleModule,
-    MatSliderModule
+    MatSliderModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule
   ]
 })
 export class WhalesModule { }
