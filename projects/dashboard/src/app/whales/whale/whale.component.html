@@ -1,1 +1,121 @@
-<p>whale works!</p>
+<div class="container" [formGroup]="form" *ngIf="whale; else loading">
+  <div class="left">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput #name_content placeholder="Name" formControlName="name" maxlength="50">
+      <mat-hint align="end">{{ name_content.value.length }} / 50</mat-hint>
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        Name is required.
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput #desc_content maxlength="300" rows="4" placeholder="Short Description" formControlName="description">
+        </textarea>
+      <mat-hint align="end">{{ desc_content.value.length }} / 300</mat-hint>
+    </mat-form-field>
+    <mat-divider></mat-divider>
+    <div class="settings">
+      <mat-label>Size:</mat-label>
+      <mat-button-toggle-group formControlName="size">
+        <mat-button-toggle [value]=WhaleSize.Small>Small</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Medium>Medium</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Large>Large</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Huge>Huge</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Gigantic>Gigantic</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="settings">
+      <mat-label>Speed (km/h):</mat-label>
+      <mat-slider showTickMarks step="5" min="0" max="60" ngDefaultControl discrete formControlName="speed">
+        <input matSliderThumb [value]="whale.speed">
+      </mat-slider>
+    </div>
+    <div class="settings">
+      <mat-label>Altitude (m):</mat-label>
+      <mat-slider showTickMarks step="10" min="10" max="200" ngDefaultControl discrete formControlName="altitude">
+        <input matSliderThumb [value]="whale.altitude">
+      </mat-slider>
+    </div>
+  </div>
+  <div class="right">
+    <mat-tab-group dynamicHeight>
+      <mat-tab label="Steps">
+        <mat-vertical-stepper #paidStepper>
+          <ng-container formArrayName="path">
+            <div *ngFor="let step of formService.pathArray.controls; index as i">
+              <mat-step [stepControl]="step">
+                <ng-container [formGroupName]="i">
+                  <ng-template matStepLabel>
+                    {{ step.get('locationName')?.value }}
+                    <button matSuffix mat-icon-button aria-label="delete" color="accent" (click)="deleteStep(i)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </ng-template>
+                  <div class="fields">
+                    <mat-form-field appearance="fill">
+                      <mat-label> Latitude</mat-label>
+                      <input type="number" matInput placeholder="Latitude" formControlName="latitude">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                      <mat-label> Longitude</mat-label>
+                      <input type="number" matInput placeholder="Longitude" formControlName="longitude">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                      <mat-label> Location name</mat-label>
+                      <input matInput placeholder="Locations name" formControlName="locationName">
+                    </mat-form-field>
+                  </div>
+                </ng-container>
+              </mat-step>
+            </div>
+          </ng-container>
+        </mat-vertical-stepper>
+        <button mat-flat-button (click)="addStep()" color="accent">
+          <span>Add step</span>
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-tab>
+      <mat-tab label="Order">Join our weekly online workshops to implement this tab.</mat-tab>
+      <mat-tab label="Map">Join our weekly online workshops to implement this tab.</mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="footer">
+    <mat-divider></mat-divider>
+    <div class="info">
+      <p>
+        <strong>Last seen: </strong>
+        <span>[ Latitude: {{ whale.lastSeen.latitude }}, </span>
+        <span>Longitude: {{ whale.lastSeen.longitude }}, </span>
+        <span>Location: {{ whale.lastSeen.locationName }} ]</span>
+      </p>
+      <p>
+        <strong>Last update: </strong>
+        <span>{{ whale.timestamps.updatedAt | date: 'full' }}</span>
+      </p>
+      <p>
+        <strong>Completed steps: </strong>
+        <span>{{ whale.completedSteps + 1 }}
+          (The whale has passed through {{ whale.path[whale.completedSteps].locationName }})</span>
+      </p>
+      <p>
+        <strong>Views: </strong>
+        <span>{{ whale.views }}</span>
+      </p>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button routerLink="../">
+        <span>Back</span>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button mat-flat-button (click)="update()" color="primary">
+        <span>Update</span>
+        <mat-icon>check</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+<ng-template #loading>
+  <mat-progress-bar mode="query"></mat-progress-bar>
+</ng-template>
+

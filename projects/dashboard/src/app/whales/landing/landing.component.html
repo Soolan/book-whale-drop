@@ -13,7 +13,7 @@
         <button mat-icon-button aria-label="expand whale" color="primary">
           <mat-icon>visibility</mat-icon>
         </button>
-        <button mat-icon-button aria-label="edit whale" color="accent">
+        <button mat-icon-button aria-label="edit whale" color="accent" [routerLink]="whale.id" >
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button aria-label="delete whale" color="warn" (click)="delete(whale.id)">
@@ -52,3 +52,7 @@
       aria-label="Select page">
   </mat-paginator>
 </div>
+<button mat-flat-button color="primary" (click)="add()">
+  <mat-icon>add</mat-icon>
+  <span>Add whale</span>
+</button>
