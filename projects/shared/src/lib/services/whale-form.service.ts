@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators} from '@angular/forms';
 import {WhaleSize} from '@shared-enums/whale-size';
 import {Coordinate} from '@shared-models/whale';
@@ -28,7 +28,7 @@ export class WhaleFormService {
       description: ['', Validators.maxLength(300)],
       altitude: [10, [Validators.required, Validators.min(10)]],
       speed: [0, [Validators.required, Validators.min(0)]],
-      views: [0, [Validators.required, Validators.min(0)]],
+      views: [0, [Validators.required]],
       path: this.formBuilder.array([this.coordinatesForm]),
       lastSeen: this.coordinatesForm,
       completedSteps: [0, Validators.required],
@@ -43,7 +43,11 @@ export class WhaleFormService {
 
   // Add a new set of coordinates to the path array
   addStep(): UntypedFormGroup {
-    const coordinatesFormGroup = this.coordinatesForm;
+    const coordinatesFormGroup = this.formBuilder.group({
+      latitude: [0, Validators.required],
+      longitude: [0, Validators.required],
+      locationName: [''],
+    });
     this.pathArray.push(coordinatesFormGroup);
     this.form.markAsDirty();
     return coordinatesFormGroup;

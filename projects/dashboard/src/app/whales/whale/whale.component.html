@@ -1,73 +1,109 @@
-<div class="container" [formGroup]="form">
-  <div class="left-pane">
-    <mat-form-field appearance="fill">
+<div class="container" [formGroup]="form" *ngIf="whale">
+  <div class="left">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name" formControlName="name">
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="description">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Description</mat-label>
       <textarea matInput #text maxlength="300" rows="4" placeholder="Short Description" formControlName="description">
         </textarea>
       <mat-hint align="end">{{ text.value.length }} / 300</mat-hint>
     </mat-form-field>
-
-    <div class="path">
-      <button mat-flat-button (click)="addStep()" color="accent" class="add-payment">
-        <span>Step</span>
-        <mat-icon>add</mat-icon>
-      </button>
-      <mat-vertical-stepper #paidStepper>
-        <ng-container formArrayName="path">
-          <div *ngFor="let step of formService.pathArray.controls; index as i">
-            <mat-step [stepControl]="step">
-              <ng-container [formGroupName]="i">
-                <ng-template matStepLabel>
-                  {{ i == 0 ? 'Start' : i ==  formService.pathArray.length - 1 ? 'End' : 'Step'}}
-                  <button matSuffix mat-icon-button aria-label="Clear" (click)="deleteStep(i)">
-                    <mat-icon>close</mat-icon>
-                  </button>
-                </ng-template>
-                <div class="fields">
-                  <mat-form-field appearance="fill">
-                    <mat-label> Latitude</mat-label>
-                    <input type="number" matInput placeholder="Latitude" formControlName="latitude">
-                  </mat-form-field>
-                  <mat-form-field appearance="fill">
-                    <mat-label> Longitude</mat-label>
-                    <input type="number" matInput placeholder="Longitude" formControlName="longitude">
-                  </mat-form-field>
-                  <mat-form-field appearance="fill">
-                    <mat-label> Location name</mat-label>
-                    <input matInput placeholder="Locations name" formControlName="locationName">
-                  </mat-form-field>
-                </div>
-              </ng-container>
-            </mat-step>
-          </div>
-        </ng-container>
-      </mat-vertical-stepper>
+    <mat-divider></mat-divider>
+    <div class="settings">
+      <mat-label>Size:</mat-label>
+      <mat-button-toggle-group formControlName="size">
+        <mat-button-toggle [value]=WhaleSize.Small>Small</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Medium>Medium</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Large>Large</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Huge>Huge</mat-button-toggle>
+        <mat-button-toggle [value]=WhaleSize.Gigantic>Gigantic</mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
+    <div class="settings">
+      <mat-label>Speed (km/h):</mat-label>
+      <mat-slider showTickMarks step="5" min="0" max="60" ngDefaultControl discrete formControlName="speed" >
+        <input matSliderThumb [value]="whale.speed">
+      </mat-slider>
+    </div>
+    <div class="settings">
+      <mat-label>Altitude (m):</mat-label>
+      <mat-slider showTickMarks step="10" min="10" max="200" ngDefaultControl discrete formControlName="altitude">
+        <input matSliderThumb [value]="whale.altitude">
+      </mat-slider>
+    </div>
+  </div>
+  <div class="right">
+    <button mat-flat-button (click)="addStep()" color="accent">
+      <span>Add step</span>
+      <mat-icon>add</mat-icon>
+    </button>
+    <mat-vertical-stepper #paidStepper>
+      <ng-container formArrayName="path">
+        <div *ngFor="let step of formService.pathArray.controls; index as i">
+          <mat-step [stepControl]="step">
+            <ng-container [formGroupName]="i">
+              <ng-template matStepLabel>
+                {{ step.get('locationName')?.value }}
+                <button matSuffix mat-icon-button aria-label="delete" color="accent" (click)="deleteStep(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-template>
+              <div class="fields">
+                <mat-form-field appearance="fill">
+                  <mat-label> Latitude</mat-label>
+                  <input type="number" matInput placeholder="Latitude" formControlName="latitude">
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label> Longitude</mat-label>
+                  <input type="number" matInput placeholder="Longitude" formControlName="longitude">
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label> Location name</mat-label>
+                  <input matInput placeholder="Locations name" formControlName="locationName">
+                </mat-form-field>
+              </div>
+            </ng-container>
+          </mat-step>
+        </div>
+      </ng-container>
+    </mat-vertical-stepper>
+  </div>
+  <div class="footer">
+    <mat-divider></mat-divider>
 
     <div class="info">
       <p>
-        <strong>last update: </strong>
-        <span>{{ form.get(['timestamps', 'updated_at'])?.value | date: 'full' }}</span>
+        <strong>Last seen: </strong>
+        <span>[ Latitude: {{ whale.lastSeen.latitude }}, </span>
+        <span>Longitude: {{ whale.lastSeen.longitude }}, </span>
+        <span>Location: {{ whale.lastSeen.locationName }} ]</span>
       </p>
       <p>
-        <strong>last seen: </strong>
-        <span>[Latitude: {{ form.get(['lastSeen', 'latitude'])?.value}}, </span>
-        <span>Longitude: {{ form.get(['lastSeen', 'longitude'])?.value}}, </span>
-        <span>Location: {{ form.get(['lastSeen', 'locationName'])?.value}} ]</span>
+        <strong>Last update: </strong>
+        <span>{{ whale.timestamps.updatedAt | date: 'full' }}</span>
       </p>
       <p>
-        <strong>views: </strong>
-        <span>{{ form.get(['views'])?.value }}</span>
+        <strong>Completed steps: </strong>
+        <span>{{ whale.completedSteps + 1 }}
+          (The whale has passed through {{ whale.path[whale.completedSteps].locationName }})</span>
       </p>
       <p>
-        <strong>completed steps: </strong>
-        <span>{{ form.get(['completedSteps'])?.value }}</span>
+        <strong>Views: </strong>
+        <span>{{ whale.views }}</span>
       </p>
+    </div>
+    <div class="actions">
+      <button mat-stroked-button routerLink="../">
+        <span>Back</span>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <button mat-flat-button (click)="update()" color="primary">
+        <span>Update</span>
+        <mat-icon>check</mat-icon>
+      </button>
     </div>
   </div>
 </div>

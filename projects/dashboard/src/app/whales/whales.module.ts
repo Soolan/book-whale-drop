@@ -15,6 +15,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatSliderModule} from '@angular/material/slider';
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import {MatStepperModule} from '@angular/material/stepper';
     ReactiveFormsModule,
     MatInputModule,
     MatExpansionModule,
-    MatStepperModule
+    MatStepperModule,
+    MatButtonToggleModule,
+    MatSliderModule
   ]
 })
 export class WhalesModule { }

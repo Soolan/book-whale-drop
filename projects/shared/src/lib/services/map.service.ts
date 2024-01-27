@@ -43,7 +43,7 @@ export class MapService {
     path.forEach((marker: Coordinate, index: number) => {
       const popup = index == start ?
         `Start:<br/>${marker.locationName}` : index == end ?
-          `End:<br/>${marker.locationName}` : `Step ${index}:<br/>${marker.locationName}`;
+          `End:<br/>${marker.locationName}` : `Step ${index+1}:<br/>${marker.locationName}`;
       const iconOptions =
         index == start ? START_MARKER_ICON : index == end ? END_MARKER_ICON : STEP_MARKER_ICON;
       const icon = L.icon(iconOptions);
