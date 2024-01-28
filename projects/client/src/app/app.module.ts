@@ -16,12 +16,16 @@ import {MatIconModule} from '@angular/material/icon';
 import { LandingComponent } from './landing/landing.component';
 import { CameraComponent } from './landing/camera/camera.component';
 import {MatDialogClose} from '@angular/material/dialog';
+import { MapComponent } from './map/map.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
-    CameraComponent
+    CameraComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -54,6 +58,8 @@ import {MatDialogClose} from '@angular/material/dialog';
     MatButtonModule,
     MatIconModule,
     MatDialogClose,
+    MatSelectModule,
+    MatTabsModule,
   ],
   providers: [
     ScreenTrackingService

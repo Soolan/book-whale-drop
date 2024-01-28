@@ -1,0 +1,24 @@
+<mat-tab-group>
+  <mat-tab label="Flying">
+    <mat-form-field>
+      <mat-label>Select an option</mat-label>
+      <mat-select [(value)]="selected" (selectionChange)="setMarkers(flyingWhales[selected], false)">
+        @for (whale of flyingWhales; track whale.name; let i = $index) {
+          <mat-option value="{{i}}">{{whale.name}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="map" #flyingMap></div>
+  </mat-tab>
+  <mat-tab label="Retired">
+    <mat-form-field>
+      <mat-label>Select an option</mat-label>
+      <mat-select [(value)]="selected" (selectionChange)="setMarkers(flyingWhales[selected], true)">
+        @for (whale of retiredWhales; track whale.name; let i = $index) {
+          <mat-option value="{{i}}">{{whale.name}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="map" #retiredMap></div>
+  </mat-tab>
+</mat-tab-group>
