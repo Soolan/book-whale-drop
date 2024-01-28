@@ -1,27 +1,36 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { collection, Firestore, getDocs, limit, orderBy, query, where } from '@angular/fire/firestore';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MapService } from '@shared-services/map.service';
-import { Coordinate, Whale } from '@shared-models/whale';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MapService} from '@shared-services/map.service';
+import {Coordinate, Whale} from '@shared-models/whale';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
-  @ViewChild('flyingMap', { static: false }) flyingMapContainer!: ElementRef;
-  @ViewChild('retiredMap', { static: false }) retiredMapContainer!: ElementRef;
+export class MapComponent implements OnInit, AfterViewInit{
+  @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   flyingWhales: Whale[] = [];
   retiredWhales: Whale[] = [];
-  selected = 0;
+  selectedFlying = 0;
+  selectedRetired = 0;
 
   constructor(
     private mapService: MapService,
     private snackBar: MatSnackBar,
     private firestore: Firestore
-  ) {}
+  ) {
+  }
+
+  ngAfterViewInit() {
+    this.mapService.initMap(this.mapContainer);
+    setTimeout(() => {
+      this.setMarkers(this.flyingWhales[this.selectedFlying], false);
+    }, 100)
+  }
+
 
   async ngOnInit(): Promise<void> {
     const userLocation = await this.getUserLocation();
@@ -29,7 +38,7 @@ export class MapComponent implements OnInit {
       const flyingWhales = await this.getWhales(false);
       this.flyingWhales = this.orderByDistance(userLocation, flyingWhales);
     } else {
-      this.snackBar.open('Unable to determine your location.', 'X', { duration: 3000 });
+      this.snackBar.open('Unable to determine your location.', 'X', {duration: 3000});
       this.flyingWhales = await this.getWhales(false);
     }
     this.retiredWhales = await this.getWhales(true);
@@ -59,12 +68,12 @@ export class MapComponent implements OnInit {
             resolve(userLocation);
           },
           (error) => {
-            this.snackBar.open(error.message, 'X', { duration: 3000 });
+            this.snackBar.open(error.message, 'X', {duration: 3000});
             resolve(undefined);
           }
         );
       } else {
-        this.snackBar.open('Geolocation is not supported by this browser.', 'X', { duration: 3000 });
+        this.snackBar.open('Geolocation is not supported by this browser.', 'X', {duration: 3000});
         resolve(undefined);
       }
     });
@@ -81,14 +90,7 @@ export class MapComponent implements OnInit {
   }
 
   setMarkers(whale: Whale, isActive: boolean) {
-    const id = isActive ? 'flyingMap' : 'retiredMap';
-    const mapContainer = isActive ? this.flyingMapContainer : this.retiredMapContainer;
-
-    // Initialize map if not already initialized
-    if (!this.mapService.isMapInitialized(id)) {
-      this.mapService.initMap(mapContainer);
-    }
-
+    this.snackBar.open(whale.name, 'X', {duration: 3000});
     this.mapService.addPathMarkers(whale.path);
     this.mapService.setPolylines(whale.path, whale.completedSteps);
     this.mapService.addWhaleMarker(whale, isActive);

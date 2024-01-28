@@ -33,9 +33,9 @@ export class MapService {
   }
 
   addPathMarkers(path: Coordinate[]): void {
-    // Clear previous markers
+    // Clear previous markers and lines
     this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
+      if (layer instanceof L.Marker || layer instanceof L.Polyline) {
         layer.remove();
       }
     });
