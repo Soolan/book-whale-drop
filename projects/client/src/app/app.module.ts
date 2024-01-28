@@ -14,11 +14,14 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import { LandingComponent } from './landing/landing.component';
+import { CameraComponent } from './landing/camera/camera.component';
+import {MatDialogClose} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LandingComponent
+    LandingComponent,
+    CameraComponent
   ],
   imports: [
     BrowserModule,
@@ -50,6 +53,7 @@ import { LandingComponent } from './landing/landing.component';
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatDialogClose,
   ],
   providers: [
     ScreenTrackingService

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {CameraComponent} from './camera/camera.component';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-landing',
@@ -6,21 +8,13 @@ import { Component } from '@angular/core';
   styleUrl: './landing.component.scss'
 })
 export class LandingComponent {
+  constructor(private dialog: MatDialog) {}
 
   camera(): void {
-    const videoElement = document.createElement('video');
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then((stream) => {
-        // Attach the video stream to the video element
-        videoElement.srcObject = stream;
-        document.body.appendChild(videoElement);
-
-        // Play the video
-        videoElement.play();
-      })
-      .catch((error) => {
-        console.error('Error accessing camera:', error);
-      });
+    const dialogRef = this.dialog.open(CameraComponent, {
+      disableClose: true,
+      panelClass: 'camera-dialog'
+    });
   }
 }
