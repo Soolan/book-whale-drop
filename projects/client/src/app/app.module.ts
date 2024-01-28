@@ -10,6 +10,9 @@ import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 import {connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,9 @@ import {environment} from '../environments/environment';
       }
       return functions;
     }),
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   providers: [
     ScreenTrackingService
