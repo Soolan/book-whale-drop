@@ -11,7 +11,6 @@ export class LandingComponent {
   constructor(private dialog: MatDialog) {}
 
   camera(): void {
-
     const dialogRef = this.dialog.open(CameraComponent, {
       disableClose: true,
       panelClass: 'camera-dialog'

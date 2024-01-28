@@ -24,6 +24,6 @@ export class CameraComponent implements AfterViewInit {
         video.srcObject = stream; // Attach the video stream to the video element
         video.play(); // Activate the camera
       })
-      .catch((error) => this.snackBar.open(error.message));
+      .catch((error) => this.snackBar.open(error.message, 'X', {duration: 5000}));
   }
 }
