@@ -1,5 +1,6 @@
 .container {
   width: 100%;
+  height: 100%;
   .toolbar {
     display: flex;
     justify-content: space-between;
@@ -11,16 +12,6 @@
       background: url("../../../shared/src/lib/images/whaledrop-logo-white.png") no-repeat left center;
       background-size: contain;
       height: 48px;
-    }
-  }
-
-  .contents {
-    margin-top: 7em;
-    button {
-      display: block;
-      margin: 3em auto;
-      width: 9em;
-      scale: 1.5;
     }
   }
 }
