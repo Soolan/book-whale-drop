@@ -63,14 +63,15 @@ export class MapComponent implements OnInit, AfterViewInit {
             const userLocation: Coordinate = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
-              locationName: 'Bali, Island of Gods'
+              locationName: '' // TODO: get location name via reverse geocoding
             };
             resolve(userLocation);
           },
           (error) => {
             this.snackBar.open(error.message, 'X', {duration: 3000});
             resolve(undefined);
-          }
+          },
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
         );
       } else {
         this.snackBar.open('Geolocation is not supported by this browser.', 'X', {duration: 3000});
