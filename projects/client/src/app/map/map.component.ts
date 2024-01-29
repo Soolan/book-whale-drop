@@ -9,13 +9,14 @@ import {Coordinate, Whale} from '@shared-models/whale';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit, AfterViewInit{
+export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   flyingWhales: Whale[] = [];
   retiredWhales: Whale[] = [];
   selectedFlying = 0;
   selectedRetired = 0;
+  userLocation: Coordinate | undefined;
 
   constructor(
     private mapService: MapService,
@@ -24,24 +25,22 @@ export class MapComponent implements OnInit, AfterViewInit{
   ) {
   }
 
-  ngAfterViewInit() {
-    this.mapService.initMap(this.mapContainer);
-    setTimeout(() => {
-      this.setMarkers(this.flyingWhales[this.selectedFlying], false);
-    }, 100)
-  }
-
-
   async ngOnInit(): Promise<void> {
-    const userLocation = await this.getUserLocation();
-    if (userLocation) {
+    this.userLocation = await this.getUserLocation();
+    if (this.userLocation) {
       const flyingWhales = await this.getWhales(false);
-      this.flyingWhales = this.orderByDistance(userLocation, flyingWhales);
+      this.flyingWhales = this.orderByDistance(this.userLocation, flyingWhales);
     } else {
-      this.snackBar.open('Unable to determine your location.', 'X', {duration: 3000});
       this.flyingWhales = await this.getWhales(false);
     }
     this.retiredWhales = await this.getWhales(true);
+  }
+
+  ngAfterViewInit() {
+    this.mapService.initMap(this.mapContainer);
+    setTimeout(() => {
+      this.setMarkers(true);
+    }, 1000)
   }
 
   async getWhales(retired: boolean): Promise<Whale[]> {
@@ -64,6 +63,7 @@ export class MapComponent implements OnInit, AfterViewInit{
             const userLocation: Coordinate = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
+              locationName: 'Bali, Island of Gods'
             };
             resolve(userLocation);
           },
@@ -89,10 +89,15 @@ export class MapComponent implements OnInit, AfterViewInit{
       .map((item) => item.whale);
   }
 
-  setMarkers(whale: Whale, isActive: boolean) {
-    this.snackBar.open(whale.name, 'X', {duration: 3000});
+  setMarkers(isActive: boolean) {
+    const whale =
+      isActive ? this.flyingWhales[this.selectedFlying] : this.retiredWhales[this.selectedRetired];
+    this.snackBar.open(whale.description, 'X', {duration: 6000});
     this.mapService.addPathMarkers(whale.path);
     this.mapService.setPolylines(whale.path, whale.completedSteps);
     this.mapService.addWhaleMarker(whale, isActive);
+    if (this.userLocation) {
+      this.mapService.addUserMarker(this.userLocation);
+    }
   }
 }

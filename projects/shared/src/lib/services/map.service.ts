@@ -9,6 +9,7 @@ import {
   RETIRED_WEST_WHALE_ICON,
   START_MARKER_ICON,
   STEP_MARKER_ICON,
+  USER_ICON,
 } from '@shared-constants/markers';
 
 @Injectable({
@@ -89,6 +90,14 @@ export class MapService {
       // Change the map view to the desired location when the marker is clicked
       this.map.setView([whale.lastSeen.latitude, whale.lastSeen.longitude], 5);  // zoom level (7)
     });
+  }
+
+  addUserMarker(coordinate: Coordinate): void {
+    // Add the whale marker to the map
+    const userMarker =
+      L.marker([coordinate.latitude, coordinate.longitude], {icon: L.icon(USER_ICON)})
+        .bindPopup(`You are here!<br/>${coordinate.locationName}`)
+        .addTo(this.map);
   }
 
   // Calculate the direction based on coordinates

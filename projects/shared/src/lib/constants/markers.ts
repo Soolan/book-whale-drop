@@ -26,3 +26,12 @@ export const RETIRED_EAST_WHALE_ICON: IconOptions = initWhaleIcon('assets/whale-
 
 export const FLYING_WEST_WHALE_ICON: IconOptions = initWhaleIcon('assets/whale-flying-west.png');
 export const RETIRED_WEST_WHALE_ICON: IconOptions = initWhaleIcon('assets/whale-retired-west.png');
+
+const initUserIcon = (iconUrl: string): IconOptions => ({
+  iconUrl,
+  iconSize: [40, 40],  // size of the icon
+  iconAnchor: [16, 34], // icon position relative to marker's location
+  popupAnchor: [5, -30]
+});
+
+export const USER_ICON: IconOptions = initUserIcon('assets/marker-user.png');
