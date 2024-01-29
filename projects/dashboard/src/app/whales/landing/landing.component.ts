@@ -14,7 +14,6 @@ import {addDoc, collection, doc, Firestore, updateDoc} from '@angular/fire/fires
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {NEW_WHALE} from '@shared-constants/whales';
 import {Router} from '@angular/router';
-import {error} from 'ng-packagr/lib/utils/log';
 
 @Component({
   selector: 'app-landing',

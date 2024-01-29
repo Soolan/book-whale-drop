@@ -1,13 +1,15 @@
 import {ElementRef, Injectable} from '@angular/core';
 import * as L from 'leaflet';
-import {IconOptions, LatLng} from 'leaflet';
 import {Coordinate, Whale} from '../models/whale';
 import {
   END_MARKER_ICON,
   FLYING_EAST_WHALE_ICON,
-  FLYING_WEST_WHALE_ICON, RETIRED_EAST_WHALE_ICON, RETIRED_WEST_WHALE_ICON,
+  FLYING_WEST_WHALE_ICON,
+  RETIRED_EAST_WHALE_ICON,
+  RETIRED_WEST_WHALE_ICON,
   START_MARKER_ICON,
   STEP_MARKER_ICON,
+  USER_ICON,
 } from '@shared-constants/markers';
 
 @Injectable({
@@ -32,9 +34,9 @@ export class MapService {
   }
 
   addPathMarkers(path: Coordinate[]): void {
-    // Clear previous markers
+    // Clear previous markers and lines
     this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
+      if (layer instanceof L.Marker || layer instanceof L.Polyline) {
         layer.remove();
       }
     });
@@ -90,10 +92,50 @@ export class MapService {
     });
   }
 
-// Calculate the direction based on coordinates
+  addUserMarker(coordinate: Coordinate): void {
+    // Add the whale marker to the map
+    const userMarker =
+      L.marker([coordinate.latitude, coordinate.longitude], {icon: L.icon(USER_ICON)})
+        .bindPopup(`You are here!<br/>${coordinate.locationName}`)
+        .addTo(this.map);
+  }
+
+  // Calculate the direction based on coordinates
   isFacingEast(whale: Whale): boolean {
     return (whale.completedSteps + 1 < whale.path.length) ?
       whale.path[whale.completedSteps + 1].longitude > whale.path[whale.completedSteps].longitude:
       whale.path[whale.completedSteps].longitude > whale.path[whale.completedSteps - 1].longitude;
+  }
+
+  // Calculate the distance between user location and a line
+  calculateDistanceToLine(userLocation: Coordinate, lineStart: Coordinate, lineEnd: Coordinate): number {
+    const A = userLocation.longitude - lineStart.longitude;
+    const B = userLocation.latitude - lineStart.latitude;
+    const C = lineEnd.longitude - lineStart.longitude;
+    const D = lineEnd.latitude - lineStart.latitude;
+    const dot = A * C + B * D;
+    const lenSq = C * C + D * D;
+    const param = dot / lenSq;
+    let closestX, closestY;
+
+    if (param < 0 || (lineStart.longitude === lineEnd.longitude && lineStart.latitude === lineEnd.latitude)) {
+      closestX = lineStart.longitude;
+      closestY = lineStart.latitude;
+    } else if (param > 1) {
+      closestX = lineEnd.longitude;
+      closestY = lineEnd.latitude;
+    } else {
+      closestX = lineStart.longitude + param * C;
+      closestY = lineStart.latitude + param * D;
+    }
+    return Math.sqrt((userLocation.longitude - closestX) ** 2 + (userLocation.latitude - closestY) ** 2);
+  }
+
+  isMapInitialized(id?: string): boolean {
+    if (!id) {
+      return !!this.map;
+    } else {
+      return !!this.map && document.getElementById(id) !== null;
+    }
   }
 }

@@ -10,10 +10,22 @@ import {connectFirestoreEmulator, getFirestore, provideFirestore} from '@angular
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 import {connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
 import {environment} from '../environments/environment';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import { LandingComponent } from './landing/landing.component';
+import { CameraComponent } from './landing/camera/camera.component';
+import {MatDialogClose} from '@angular/material/dialog';
+import { MapComponent } from './map/map.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LandingComponent,
+    CameraComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +54,12 @@ import {environment} from '../environments/environment';
       }
       return functions;
     }),
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogClose,
+    MatSelectModule,
+    MatTabsModule,
   ],
   providers: [
     ScreenTrackingService
