@@ -1,4 +1,13 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "whales",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "timestamps.deletedAt", "order": "ASCENDING" },
+        { "fieldPath": "timestamps.updatedAt", "order": "DESCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

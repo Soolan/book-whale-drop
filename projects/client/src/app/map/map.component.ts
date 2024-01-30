@@ -24,7 +24,7 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
   selectedFlying = 0;
   selectedRetired = 0;
   userLocation: Coordinate | undefined;
-  isMapInitialized = false;
+  isInitialized = false;
 
   constructor(
     private mapService: MapService,
@@ -46,9 +46,9 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    if (this.flyingWhales.length > 0 && !this.isMapInitialized) {
+    if (this.flyingWhales.length > 0 && !this.isInitialized) {
       this.setMarkers(true);
-      this.isMapInitialized = true;
+      this.isInitialized = true;
     }
   }
 
@@ -56,8 +56,8 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
     const whalesRef = collection(this.firestore, 'whales');
     const q = query(
       whalesRef,
-      where("timestamps.deletedAt", flying ? "==" : ">", 0), // changed logic
-      orderBy(flying ? "timestamps.updatedAt" : "timestamps.deletedAt", "desc"), // changed logic
+      where("timestamps.deletedAt", flying ? "==" : ">", 0),
+      orderBy(flying ? "timestamps.updatedAt" : "timestamps.deletedAt", "desc"),
       limit(10)
     );
     const querySnapshot = await getDocs(q);
@@ -93,11 +93,7 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
     const whales = await this.getWhales(true);
     return whales.map((whale) => ({
       whale,
-      distance: this.mapService.calculateDistanceToLine(
-        this.userLocation!,
-        whale.lastSeen,
-        whale.path[whale.completedSteps]
-      ),
+      distance: this.mapService.calculateDistanceToLine(this.userLocation!, whale.lastSeen, whale.path[whale.completedSteps]),
     }))
       .sort((a, b) => a.distance - b.distance)
       .map((item) => item.whale);

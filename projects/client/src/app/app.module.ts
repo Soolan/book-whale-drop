@@ -19,6 +19,7 @@ import {MatDialogClose} from '@angular/material/dialog';
 import { MapComponent } from './map/map.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     MatDialogClose,
     MatSelectModule,
     MatTabsModule,
+    MatProgressBarModule,
   ],
   providers: [
     ScreenTrackingService
