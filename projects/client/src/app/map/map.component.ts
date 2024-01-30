@@ -1,4 +1,11 @@
-import {AfterViewInit, Component, ElementRef, OnInit, signal, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MapService} from '@shared-services/map.service';
@@ -9,7 +16,7 @@ import {Coordinate, Whale} from '@shared-models/whale';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
   @ViewChild('map', {static: false}) mapContainer!: ElementRef;
 
   flyingWhales: Whale[] = [];
@@ -17,6 +24,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   selectedFlying = 0;
   selectedRetired = 0;
   userLocation: Coordinate | undefined;
+  isMapInitialized = false;
 
   constructor(
     private mapService: MapService,
@@ -28,19 +36,19 @@ export class MapComponent implements OnInit, AfterViewInit {
   async ngOnInit(): Promise<void> {
     this.userLocation = await this.getUserLocation();
     this.flyingWhales = this.userLocation ?
-      await this.getNearbyWhales():
+      await this.getNearbyWhales() :
       await this.getWhales(true);
     this.retiredWhales = await this.getWhales(false); // changed to retired
   }
 
   ngAfterViewInit() {
     this.mapService.initMap(this.mapContainer);
-    // Define a signal for the flying whales
-    const flyingWhalesSignal = signal<Whale[]>(this.flyingWhales);
+  }
 
-    // Check if flying whales are available and trigger setMarkers
-    if (flyingWhalesSignal().length > 0) {
+  ngAfterViewChecked() {
+    if (this.flyingWhales.length > 0 && !this.isMapInitialized) {
       this.setMarkers(true);
+      this.isMapInitialized = true;
     }
   }
 
@@ -72,7 +80,7 @@ export class MapComponent implements OnInit, AfterViewInit {
             this.snackBar.open(error.message, 'X', {duration: 3000});
             resolve(undefined);
           },
-          { enableHighAccuracy: true, timeout: 5000, maximumAge: 60000 }
+          {enableHighAccuracy: true, timeout: 5000, maximumAge: 60000}
         );
       } else {
         this.snackBar.open('Geolocation is not supported by this browser.', 'X', {duration: 3000});
@@ -84,13 +92,13 @@ export class MapComponent implements OnInit, AfterViewInit {
   async getNearbyWhales(): Promise<Whale[]> {
     const whales = await this.getWhales(true);
     return whales.map((whale) => ({
-        whale,
-        distance: this.mapService.calculateDistanceToLine(
-          this.userLocation!,
-          whale.lastSeen,
-          whale.path[whale.completedSteps]
-        ),
-      }))
+      whale,
+      distance: this.mapService.calculateDistanceToLine(
+        this.userLocation!,
+        whale.lastSeen,
+        whale.path[whale.completedSteps]
+      ),
+    }))
       .sort((a, b) => a.distance - b.distance)
       .map((item) => item.whale);
   }
