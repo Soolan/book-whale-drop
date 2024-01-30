@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, signal, ViewChild} from '@angular/core';
 import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MapService} from '@shared-services/map.service';
@@ -35,9 +35,13 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.mapService.initMap(this.mapContainer);
-    setTimeout(() => {
+    // Define a signal for the flying whales
+    const flyingWhalesSignal = signal<Whale[]>(this.flyingWhales);
+
+    // Check if flying whales are available and trigger setMarkers
+    if (flyingWhalesSignal().length > 0) {
       this.setMarkers(true);
-    }, 1000)
+    }
   }
 
   async getWhales(flying: boolean): Promise<Whale[]> {
