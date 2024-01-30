@@ -27,13 +27,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<void> {
     this.userLocation = await this.getUserLocation();
-    if (this.userLocation) {
-      const flyingWhales = await this.getWhales(false);
-      this.flyingWhales = this.orderByDistance(this.userLocation, flyingWhales);
-    } else {
-      this.flyingWhales = await this.getWhales(false);
-    }
-    this.retiredWhales = await this.getWhales(true);
+    this.flyingWhales = this.userLocation ?
+      await this.getNearbyWhales():
+      await this.getWhales(true);
+    this.retiredWhales = await this.getWhales(false); // changed to retired
   }
 
   ngAfterViewInit() {
@@ -43,12 +40,12 @@ export class MapComponent implements OnInit, AfterViewInit {
     }, 1000)
   }
 
-  async getWhales(retired: boolean): Promise<Whale[]> {
+  async getWhales(flying: boolean): Promise<Whale[]> {
     const whalesRef = collection(this.firestore, 'whales');
     const q = query(
       whalesRef,
-      where("timestamps.deletedAt", retired ? ">" : "==", 0),
-      orderBy(retired ? "timestamps.deletedAt" : "timestamps.updatedAt", "desc"),
+      where("timestamps.deletedAt", flying ? "==" : ">", 0), // changed logic
+      orderBy(flying ? "timestamps.updatedAt" : "timestamps.deletedAt", "desc"), // changed logic
       limit(10)
     );
     const querySnapshot = await getDocs(q);
@@ -80,15 +77,20 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  orderByDistance(userLocation: Coordinate, whales: Whale[]): Whale[] {
-    return whales
-      .map((whale) => ({
+  async getNearbyWhales(): Promise<Whale[]> {
+    const whales = await this.getWhales(true);
+    return whales.map((whale) => ({
         whale,
-        distance: this.mapService.calculateDistanceToLine(userLocation, whale.lastSeen, whale.path[whale.completedSteps]),
+        distance: this.mapService.calculateDistanceToLine(
+          this.userLocation!,
+          whale.lastSeen,
+          whale.path[whale.completedSteps]
+        ),
       }))
       .sort((a, b) => a.distance - b.distance)
       .map((item) => item.whale);
   }
+
 
   setMarkers(isActive: boolean) {
     const whale =
