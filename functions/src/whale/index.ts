@@ -1,9 +1,51 @@
-// Helper function to convert degrees to radians
-import {Coordinate} from '@shared-models/whale';
+import {Coordinate, WhaleWithId} from '@shared-models/whale';
+import PromisePool from "es6-promise-pool";
+import {logger} from 'firebase-functions';
+import { firestore } from 'firebase-admin';
 
-export function updateWhales(db: any): void {
-  // TODO
+// Maximum concurrent whale updates.
+const MAX_CONCURRENT: number = 5;
+
+export async function updateWhales(db: firestore.Firestore): Promise<void> {
+  const activeWhales: WhaleWithId[] = await getActiveWhales(db);
+  const promisePool = new PromisePool(
+    () => processWhales(activeWhales, db),
+    MAX_CONCURRENT,
+  );
+  await promisePool.start();
+  logger.info(`Whales updates finished. Total whales processed: ${activeWhales.length}`);
 }
+
+async function processWhales(whales: WhaleWithId[], db: firestore.Firestore): Promise<void> {
+  try {
+    for (const whale of whales) {
+      whale.lastSeen = calculateNewLocation(whale.lastSeen, whale.path[whale.completedSteps], whale.speed);
+      whale.timestamps.updatedAt = Date.now();
+      whale.timestamps.deletedAt = whale.completedSteps === whale.path.length - 1 ? Date.now() : 0;
+      await db.collection("whales").doc(whale.id).set(whale);
+      logger.log(`Whale update completed for ${whale.id}`);
+    }
+  } catch (error) {
+    // Log any errors that occurred during the update process
+    logger.error(`Error updating whales: ${error}`);
+    throw error; // Rethrow the error to propagate it up
+  }
+}
+
+function hasPassedStep(currentLocation: Coordinate, nextStep: Coordinate): boolean {
+  // Your logic to determine if the whale has passed the step
+  // For example, you can check if the distance between currentLocation and nextStep is below a certain threshold.
+  const distanceThreshold = 0.1; // Adjust this threshold as needed
+  const distance = haversine(currentLocation, nextStep);
+  return distance < distanceThreshold;
+}
+
+// Function to get active whales
+async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
+  const querySnapshot = await db.collection("whales").where("timestamps.deletedAt", "==", 0).get();
+  return querySnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as WhaleWithId));
+}
+
 
 
 export function calculateNewLocation(current: Coordinate, target: Coordinate, speed: number): Coordinate {
@@ -27,7 +69,7 @@ export function calculateNewLocation(current: Coordinate, target: Coordinate, sp
   const newLatitude = toDegrees(newLatRad);
   const newLongitude = toDegrees(newLngRad);
 
-  return { latitude: newLatitude, longitude: newLongitude };
+  return {latitude: newLatitude, longitude: newLongitude};
 }
 
 function toRadians(degrees: number): number {
