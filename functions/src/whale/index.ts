@@ -1,22 +1,27 @@
 import {Coordinate, WhaleWithId} from "@shared-models/whale";
-// import {Coordinate, WhaleWithId} from '../../../projects/shared/src/lib/models/whale';
-import PromisePool from "es6-promise-pool";
 import {logger} from "firebase-functions";
 import {firestore} from "firebase-admin";
 
-// Maximum concurrent whale updates.
-const MAX_CONCURRENT = 5;
-const THRESHOLD = 0.05; // 50 meters
+const THRESHOLD = 0.0000078; // 50 meters
 
 export async function updateWhales(db: firestore.Firestore): Promise<void> {
-  const activeWhales: WhaleWithId[] = await getActiveWhales(db);
-  const promisePool = new PromisePool(
-    () => processWhales(activeWhales, db),
-    MAX_CONCURRENT,
-  );
-  await promisePool.start();
-  logger.info(`Whales updates finished. Total whales processed: ${activeWhales.length}`);
+  try {
+    const activeWhales: WhaleWithId[] = await getActiveWhales(db);
+    // Check if there is an issue fetching whales or if the array is empty
+    if (!activeWhales || activeWhales.length === 0) {
+      logger.warn("No active whales found. Exiting update process.");
+      return;
+    }
+    // Use Promise.all to process whales concurrently
+    await Promise.all(activeWhales.map((whale: WhaleWithId) => processWhale(whale, db)));
+
+    logger.info(`Whales updates finished. Total whales processed: ${activeWhales.length}`);
+  } catch (error) {
+    // Log any errors that occurred during the update process
+    logger.error(`Error updating whales: ${error}`);
+  }
 }
+
 
 // Function to get active whales
 async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
@@ -24,20 +29,21 @@ async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
   return querySnapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()} as WhaleWithId));
 }
 
-async function processWhales(whales: WhaleWithId[], db: firestore.Firestore): Promise<void> {
+async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promise<void> {
   try {
-    for (const whale of whales) {
-      whale.lastSeen = calculateNewLocation(whale.lastSeen, whale.path[whale.completedSteps], whale.speed);
-      whale.timestamps.updatedAt = Date.now();
-      whale.completedSteps += hasPassedStep(whale.lastSeen, whale.path[whale.completedSteps]) ? 1 : 0;
-      whale.timestamps.deletedAt = whale.completedSteps === whale.path.length - 1 ? Date.now() : 0;
-      await db.collection("whales").doc(whale.id).set(whale);
-      logger.log(`Whale update completed for ${whale.id}`);
-    }
+    const nextStep = whale.path[whale.completedSteps + 1];
+    whale.lastSeen = calculateNewLocation(whale.lastSeen, nextStep, whale.speed);
+    whale.timestamps.updatedAt = Date.now();
+    whale.completedSteps += hasPassedStep(whale.lastSeen, nextStep) ? 1 : 0;
+    whale.timestamps.deletedAt = whale.completedSteps === whale.path.length - 1 ? Date.now() : 0;
+
+    await db.collection("whales").doc(whale.id).set(whale);
+    logger.log(`Whale update completed for ${whale.id}`);
   } catch (error) {
-    // Log any errors that occurred during the update process
-    logger.error(`Error updating whales: ${error}`);
-    throw error; // Rethrow the error to propagate it up
+    // Log any errors that occurred during the update process for a specific whale
+    logger.error(`Error updating whale ${whale.id}: ${error}`);
+    // Rethrow the error to propagate it up
+    throw error;
   }
 }
 
@@ -48,27 +54,43 @@ function hasPassedStep(lastSeen: Coordinate, nextStep: Coordinate): boolean {
 }
 
 function calculateNewLocation(current: Coordinate, target: Coordinate, speed: number): Coordinate {
+  logger.log(`[currentlat] ${current.latitude} - [currentLng] ${current.longitude}`);
+  logger.log(`[targetlat] ${target.latitude} - [targetLng] ${target.longitude}`);
+
   // Convert latitude and longitude from degrees to radians
   const currentLatRad = toRadians(current.latitude);
   const currentLngRad = toRadians(current.longitude);
+  logger.log(`[currentLatRad] ${currentLatRad} - [currentLngRad] ${currentLngRad}`);
+
   const targetLatRad = toRadians(target.latitude);
   const targetLngRad = toRadians(target.longitude);
+  logger.log(`[targetLatRad]  ${targetLatRad} - [targetLngRad] ${targetLngRad}`);
 
   // Calculate the distance (in radians) between current and target locations
   const distance = haversine(current, target);
-
   // Calculate the time it takes to reach the target at the given speed (hours)
   const timeHours = distance / speed;
+  logger.log(`[distance] ${distance} - [timeHours] ${timeHours}`);
 
   // Interpolate between current and target locations based on time
   const newLatRad = currentLatRad + (targetLatRad - currentLatRad) * timeHours;
   const newLngRad = currentLngRad + (targetLngRad - currentLngRad) * timeHours;
 
+  logger.log(`[New Rads]  latitude: ${newLatRad}, longitude: ${newLngRad}`);
+
   // Convert the new latitude and longitude back to degrees
   const newLatitude = toDegrees(newLatRad);
   const newLongitude = toDegrees(newLngRad);
+  logger.log(`[New LatLng]  latitude: ${newLatitude}, longitude: ${newLongitude}`);
 
-  return {latitude: newLatitude, longitude: newLongitude};
+
+  // Limit the number of decimal places to 6
+  const limitedLatitude = parseFloat(newLatitude.toFixed(6));
+  const limitedLongitude = parseFloat(newLongitude.toFixed(6));
+  logger.log(`[New Limited]  latitude: ${limitedLatitude}, longitude: ${limitedLongitude}`);
+
+
+  return {latitude: limitedLatitude, longitude: limitedLongitude, locationName: ""};
 }
 
 function toRadians(degrees: number): number {
@@ -82,7 +104,6 @@ function toDegrees(radians: number): number {
 
 // Helper function to calculate haversine distance between two points (in radians)
 function haversine(lastSeen: Coordinate, target: Coordinate): number {
-  const earthRadius = 6371; // Earth's radius in kilometers
   const latitude = toRadians(target.latitude - lastSeen.latitude);
   const longitude = toRadians(target.longitude - lastSeen.longitude);
   const a =
@@ -90,6 +111,5 @@ function haversine(lastSeen: Coordinate, target: Coordinate): number {
     Math.cos(toRadians(lastSeen.latitude)) *
     Math.cos(toRadians(target.latitude)) *
     Math.sin(longitude / 2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return earthRadius * c;
+  return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
