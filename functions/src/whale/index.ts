@@ -1,10 +1,12 @@
-import {Coordinate, WhaleWithId} from '@shared-models/whale';
+import {Coordinate, WhaleWithId} from "@shared-models/whale";
+// import {Coordinate, WhaleWithId} from '../../../projects/shared/src/lib/models/whale';
 import PromisePool from "es6-promise-pool";
-import {logger} from 'firebase-functions';
-import { firestore } from 'firebase-admin';
+import {logger} from "firebase-functions";
+import {firestore} from "firebase-admin";
 
 // Maximum concurrent whale updates.
-const MAX_CONCURRENT: number = 5;
+const MAX_CONCURRENT = 5;
+const THRESHOLD = 0.05; // 50 meters
 
 export async function updateWhales(db: firestore.Firestore): Promise<void> {
   const activeWhales: WhaleWithId[] = await getActiveWhales(db);
@@ -16,11 +18,18 @@ export async function updateWhales(db: firestore.Firestore): Promise<void> {
   logger.info(`Whales updates finished. Total whales processed: ${activeWhales.length}`);
 }
 
+// Function to get active whales
+async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
+  const querySnapshot = await db.collection("whales").where("timestamps.deletedAt", "==", 0).get();
+  return querySnapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()} as WhaleWithId));
+}
+
 async function processWhales(whales: WhaleWithId[], db: firestore.Firestore): Promise<void> {
   try {
     for (const whale of whales) {
       whale.lastSeen = calculateNewLocation(whale.lastSeen, whale.path[whale.completedSteps], whale.speed);
       whale.timestamps.updatedAt = Date.now();
+      whale.completedSteps += hasPassedStep(whale.lastSeen, whale.path[whale.completedSteps]) ? 1 : 0;
       whale.timestamps.deletedAt = whale.completedSteps === whale.path.length - 1 ? Date.now() : 0;
       await db.collection("whales").doc(whale.id).set(whale);
       logger.log(`Whale update completed for ${whale.id}`);
@@ -32,23 +41,13 @@ async function processWhales(whales: WhaleWithId[], db: firestore.Firestore): Pr
   }
 }
 
-function hasPassedStep(currentLocation: Coordinate, nextStep: Coordinate): boolean {
-  // Your logic to determine if the whale has passed the step
-  // For example, you can check if the distance between currentLocation and nextStep is below a certain threshold.
-  const distanceThreshold = 0.1; // Adjust this threshold as needed
-  const distance = haversine(currentLocation, nextStep);
-  return distance < distanceThreshold;
+function hasPassedStep(lastSeen: Coordinate, nextStep: Coordinate): boolean {
+  // Is the distance between lastSeen and nextStep below a certain threshold?
+  const distance = haversine(lastSeen, nextStep);
+  return distance < THRESHOLD;
 }
 
-// Function to get active whales
-async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
-  const querySnapshot = await db.collection("whales").where("timestamps.deletedAt", "==", 0).get();
-  return querySnapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() } as WhaleWithId));
-}
-
-
-
-export function calculateNewLocation(current: Coordinate, target: Coordinate, speed: number): Coordinate {
+function calculateNewLocation(current: Coordinate, target: Coordinate, speed: number): Coordinate {
   // Convert latitude and longitude from degrees to radians
   const currentLatRad = toRadians(current.latitude);
   const currentLngRad = toRadians(current.longitude);
