@@ -1,10 +1,8 @@
-<mat-tab-group >
+<mat-tab-group>
   <mat-tab label="Flying">
     <mat-form-field>
       <mat-select [(value)]="selectedFlying" (selectionChange)="setMarkers(true)">
-        @for (whale of flyingWhales; track whale.name; let i = $index) {
-          <mat-option [value]="i">{{whale.name}}</mat-option>
-        }
+        <mat-option [value]="i" *ngFor="let whale of flyingWhales;let i = index">{{ whale.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </mat-tab>
@@ -12,11 +10,13 @@
     <mat-form-field>
       <mat-label>Select an option</mat-label>
       <mat-select [(value)]="selectedRetired" (selectionChange)="setMarkers(false)">
-        @for (whale of retiredWhales; track whale.name; let i = $index) {
-          <mat-option [value]="i">{{whale.name}}</mat-option>
-        }
+        <mat-option [value]="i" *ngFor="let whale of retiredWhales;let i = index">{{ whale.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </mat-tab>
 </mat-tab-group>
-<div class="map" #map *ngIf="flyingWhales"></div>
+<div class="loading" *ngIf="!isInitialized">
+  <p>One moment please...</p>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+<div class="map" #map></div>
