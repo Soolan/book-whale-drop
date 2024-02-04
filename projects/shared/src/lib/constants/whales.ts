@@ -18,8 +18,8 @@ export const NEW_WHALE: Whale = {
     { latitude: 19.4326, longitude: -99.1332 , locationName: "Mexico City, Mexico" },
     { latitude: 58.3019, longitude: -134.4197 , locationName: "Juneau, USA" },
   ],
-  lastSeen: { latitude: -1.3028, longitude: 36.6825 , locationName: "Nairobi, Kenya" },
-  completedSteps: 3,
+  lastSeen: { latitude: -36.8485, longitude: 174.7633 , locationName: "Auckland, New Zealand" },
+  completedSteps: 0,
   timestamps: {
     createdAt: Date.now(),
     updatedAt: Date.now(),

@@ -9,5 +9,5 @@ exports.whaleControlTower = onSchedule({
   schedule: "every 5 minutes",
   retryCount: 2,
   minBackoffSeconds: 60,
-}, () =>  updateWhales(db));
+}, () => updateWhales(db));
 
