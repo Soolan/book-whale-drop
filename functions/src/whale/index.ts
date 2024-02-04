@@ -2,8 +2,6 @@ import {Coordinate, WhaleWithId} from "@shared-models/whale";
 import {logger} from "firebase-functions";
 import {firestore} from "firebase-admin";
 
-const THRESHOLD = 0.0000078; // 50 meters
-
 export async function updateWhales(db: firestore.Firestore): Promise<void> {
   try {
     const activeWhales: WhaleWithId[] = await getActiveWhales(db);
@@ -29,14 +27,23 @@ async function getActiveWhales(db: any): Promise<WhaleWithId[]> {
   return querySnapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()} as WhaleWithId));
 }
 
+
 async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promise<void> {
   try {
+    const earthRadius = 6371; // Radius of the Earth
     const nextStep = whale.path[whale.completedSteps + 1];
-    whale.lastSeen = calculateNewLocation(whale.lastSeen, nextStep, whale.speed);
+    const distanceToNextStep = haversine(whale.lastSeen, nextStep) * earthRadius;
+    if (distanceToNextStep <= whale.speed) {
+      // The whale will pass the next step with its current speed
+      const remainingDistance = whale.speed - distanceToNextStep;
+      // Move the whale in a straight line to the next step using the remaining distance
+      whale.lastSeen = calculateNewLocation(nextStep, whale.path[whale.completedSteps + 2], remainingDistance);
+      whale.completedSteps++;
+    } else {
+      whale.lastSeen = calculateNewLocation(whale.lastSeen, nextStep, whale.speed);
+    }
     whale.timestamps.updatedAt = Date.now();
-    whale.completedSteps += hasPassedStep(whale.lastSeen, nextStep) ? 1 : 0;
     whale.timestamps.deletedAt = whale.completedSteps === whale.path.length - 1 ? Date.now() : 0;
-
     await db.collection("whales").doc(whale.id).set(whale);
     logger.log(`Whale update completed for ${whale.id}`);
   } catch (error) {
@@ -50,7 +57,8 @@ async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promis
 function hasPassedStep(lastSeen: Coordinate, nextStep: Coordinate): boolean {
   // Is the distance between lastSeen and nextStep below a certain threshold?
   const distance = haversine(lastSeen, nextStep);
-  return distance < THRESHOLD;
+  const threshold = 0.0000078; // 50 meters
+  return distance < threshold;
 }
 
 function calculateNewLocation(current: Coordinate, target: Coordinate, speed: number): Coordinate {
@@ -68,8 +76,10 @@ function calculateNewLocation(current: Coordinate, target: Coordinate, speed: nu
 
   // Calculate the distance (in radians) between current and target locations
   const distance = haversine(current, target);
+  
   // Calculate the time it takes to reach the target at the given speed (hours)
-  const timeHours = distance / speed;
+  const timeHours = distance * (1 / speed);
+
   logger.log(`[distance] ${distance} - [timeHours] ${timeHours}`);
 
   // Interpolate between current and target locations based on time
