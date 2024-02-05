@@ -20,9 +20,10 @@ import { MapComponent } from './map/map.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import 'aframe'; // Import A-Frame
+import 'aframe';
 import 'ar.js';
-import { GpsNewEntityPlaceDirective } from './gps-new-entity-place.directive'; // Import AR.js
+import { GpsNewEntityPlaceDirective } from './directives/gps-new-entity-place.directive';
+import { PositionDirective } from './directives/position.directive';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { GpsNewEntityPlaceDirective } from './gps-new-entity-place.directive'; /
     LandingComponent,
     CameraComponent,
     MapComponent,
-    GpsNewEntityPlaceDirective
+    GpsNewEntityPlaceDirective,
+    PositionDirective
   ],
   imports: [
     BrowserModule,
