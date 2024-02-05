@@ -21,14 +21,16 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import 'aframe'; // Import A-Frame
-import 'ar.js'; // Import AR.js
+import 'ar.js';
+import { GpsNewEntityPlaceDirective } from './gps-new-entity-place.directive'; // Import AR.js
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
     CameraComponent,
-    MapComponent
+    MapComponent,
+    GpsNewEntityPlaceDirective
   ],
   imports: [
     BrowserModule,

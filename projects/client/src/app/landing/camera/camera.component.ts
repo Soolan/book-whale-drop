@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {Whale} from '@shared-models/whale';
 
 @Component({
   selector: 'app-camera',
@@ -29,5 +30,12 @@ export class CameraComponent implements AfterViewInit {
         video.play(); // Activate the camera
       })
       .catch((error) => this.snackBar.open(error.message, 'X', {duration: 5000}));
+  }
+
+  calculateSmoothPosition(whale: Whale): string {
+    // Implement smooth interpolation logic based on real-time updates
+    // You can use linear interpolation (lerp) or other techniques here
+    // For simplicity, we'll just return the last known position as a string
+    return `${whale.lastSeen.latitude} ${whale.lastSeen.longitude} 0`;
   }
 }

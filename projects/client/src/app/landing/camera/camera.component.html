@@ -1,15 +1,19 @@
 <div class="camera">
   <video #videoElement></video>
 
-  <!-- camera.component.html -->
-  <a-scene>
-    <a-marker preset="hiro">
-      <!-- Add your AR content here, e.g., render the closest whale -->
-      <a-sphere position="0 1 0" radius="0.5" color="red"></a-sphere>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
+  <a-scene vr-mode-ui='enabled: false'
+           arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false'
+           renderer='antialias: true; alpha: true'>
+    <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 10000'></a-camera>
 
+    <a-entity *ngFor="let whale of data.closestWhales"
+              material='color: blue'
+              geometry='primitive: box'
+              [gps-new-entity-place]="{latitude: whale.lastSeen.latitude, longitude: whale.lastSeen.longitude}"
+              [position]="calculateSmoothPosition(whale)">
+    </a-entity>
+
+  </a-scene>
   <button mat-icon-button mat-dialog-close>
     <mat-icon>close</mat-icon>
   </button>
