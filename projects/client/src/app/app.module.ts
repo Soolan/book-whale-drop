@@ -20,6 +20,8 @@ import { MapComponent } from './map/map.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import 'aframe'; // Import A-Frame
+import 'ar.js'; // Import AR.js
 
 @NgModule({
   declarations: [
