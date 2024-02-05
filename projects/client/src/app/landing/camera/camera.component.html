@@ -1,5 +1,15 @@
 <div class="camera">
   <video #videoElement></video>
+
+  <!-- camera.component.html -->
+  <a-scene>
+    <a-marker preset="hiro">
+      <!-- Add your AR content here, e.g., render the closest whale -->
+      <a-sphere position="0 1 0" radius="0.5" color="red"></a-sphere>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
   <button mat-icon-button mat-dialog-close>
     <mat-icon>close</mat-icon>
   </button>

@@ -1,5 +1,6 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-camera',
@@ -9,7 +10,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 export class CameraComponent implements AfterViewInit {
   @ViewChild('videoElement') videoElement!: ElementRef;
 
-  constructor(private snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public data: { userLocation: any; closestWhales: any }
+  ) {}
 
   ngAfterViewInit(): void {
     this.initCamera();
