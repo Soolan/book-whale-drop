@@ -9,7 +9,7 @@ import {
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MapService} from '@shared-services/map.service';
 import {Coordinate, Whale} from '@shared-models/whale';
-import {HelperService} from '../helper.service';
+import {HelperService} from '../services/helper.service';
 
 @Component({
   selector: 'app-map',

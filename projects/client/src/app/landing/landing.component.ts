@@ -3,7 +3,7 @@ import {CameraComponent} from './camera/camera.component';
 import {MatDialog} from '@angular/material/dialog';
 import {Coordinate, Whale} from '@shared-models/whale';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {HelperService} from '../helper.service';
+import {HelperService} from '../services/helper.service';
 
 @Component({
   selector: 'app-landing',

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Coordinate, WhaleWithId} from '@shared-models/whale';
 import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
@@ -61,5 +61,47 @@ export class HelperService {
       }))
       .sort((a, b) => a.distance - b.distance)
       .map((item) => item.whale);
+  }
+
+
+  lerp(start: number, end: number, t: number): number {
+    return start * (1 - t) + end * t;
+  }
+
+  interpolatePosition(lastSeen: Coordinate, nextStep: Coordinate, progress: number): string {
+    const interpolatedLatitude = this.lerp(lastSeen.latitude, nextStep.latitude, progress);
+    const interpolatedLongitude = this.lerp(lastSeen.longitude, nextStep.longitude, progress);
+    return `${interpolatedLatitude} ${interpolatedLongitude} 0`;
+  }
+
+  haversine(lastSeen: Coordinate, target: Coordinate): number {
+    const earthRadius = 6371; // Earth's radius in kilometers
+
+    const latitude = this.toRadians(target.latitude - lastSeen.latitude);
+    const longitude = this.toRadians(target.longitude - lastSeen.longitude);
+
+    const a =
+      Math.sin(latitude / 2) ** 2 +
+      Math.cos(this.toRadians(lastSeen.latitude)) *
+      Math.cos(this.toRadians(target.latitude)) *
+      Math.sin(longitude / 2) ** 2;
+
+    const centralAngle = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Distance in kilometers
+    return earthRadius * centralAngle;
+  }
+
+  toRadians(degrees: number): number {
+    return (degrees * Math.PI) / 180;
+  }
+
+  extractCoordinate(positionString: string): Coordinate {
+    const coordinates = positionString.split(' ').map(parseFloat);
+    return {
+      latitude: coordinates[0],
+      longitude: coordinates[1],
+      locationName: '' // You might want to improve this logic based on your requirements
+    };
   }
 }

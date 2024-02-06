@@ -4,16 +4,16 @@
   <a-scene vr-mode-ui='enabled: false'
            arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false'
            renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 10000'></a-camera>
+    <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 50'></a-camera>
 
     <a-entity *ngFor="let whale of data.closestWhales"
               material='color: blue'
               geometry='primitive: box'
               [gps-new-entity-place]="{latitude: whale.lastSeen.latitude, longitude: whale.lastSeen.longitude}"
-              [position]="calculateSmoothPosition(whale)">
+              [position]="calculateSmoothPosition(whale, progress)">
     </a-entity>
-
   </a-scene>
+
   <button mat-icon-button mat-dialog-close>
     <mat-icon>close</mat-icon>
   </button>
