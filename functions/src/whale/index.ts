@@ -48,6 +48,7 @@ async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promis
       whale.lastSeen =
         projectPointToLine(whale.lastSeen, whale.path[whale.completedSteps], whale.path[whale.completedSteps + 1]);
     }
+    logger.debug(`Projected: ${whale.lastSeen.latitude}, ${whale.lastSeen.longitude}`);
     const {id, ...whaleWithoutId} = whale;
     await db.collection("whales").doc(id).set(whaleWithoutId);
   } catch (error) {
@@ -59,24 +60,32 @@ async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promis
 }
 
 function calculateNewLocation(current: Coordinate, nextStep: Coordinate, speed: number): Coordinate {
+  logger.debug(`Current location: ${current.latitude}, ${current.longitude}, next step: ${nextStep.latitude}, ${nextStep.longitude}, speed: ${speed}`);
   const distance = speed / 12; // Distance travelled in 5 minutes or 1/12 hour (scheduler runs every 5 min)
+  const distanceRad = distance / EARTH_RADIUS;
+  logger.debug(`Distance: ${distance}, distanceRad: ${distanceRad}`);
   const currentLatRad = toRadians(current.latitude);
   const currentLngRad = toRadians(current.longitude);
-  const bearing = calculateBearing(current, nextStep); // Calculate bearing
+  logger.debug(`currentLatRad: ${currentLatRad}, currentLngRad: ${currentLngRad}`);
+  
+  const bearingRad = calculateBearing(current, nextStep);
+  logger.debug(`bearingRad: ${bearingRad}`);
 
   // Calculate new latitude in radians
-  const newLatRad = Math.asin(Math.sin(currentLatRad) * Math.cos(distance / EARTH_RADIUS) +
-    Math.cos(currentLatRad) * Math.sin(distance / EARTH_RADIUS) * Math.cos(bearing));
+  const newLatRad = Math.asin(Math.sin(currentLatRad) * Math.cos(distanceRad) +
+    Math.cos(currentLatRad) * Math.sin(distanceRad) * Math.cos(bearingRad));
 
   // Calculate new longitude in radians
   const newLngRad = currentLngRad + Math.atan2(
-    Math.sin(bearing) * Math.sin(distance / EARTH_RADIUS) * Math.cos(currentLatRad),
-    Math.cos(distance / EARTH_RADIUS) - Math.sin(currentLatRad) * Math.sin(newLatRad)
+    Math.sin(bearingRad) * Math.sin(distanceRad) * Math.cos(currentLatRad),
+    Math.cos(distanceRad) - Math.sin(currentLatRad) * Math.sin(newLatRad)
   );
+  logger.debug(`newLatRad: ${newLatRad}, newLngRad: ${newLngRad}`);
 
   // Convert the new latitude and longitude back to degrees and round to 6 decimal places
   const newLatitude = parseFloat(toDegrees(newLatRad).toFixed(6));
   const newLongitude = parseFloat(toDegrees(newLngRad).toFixed(6));
+  logger.debug(`New location: ${newLatitude}, ${newLongitude}`);
   return {latitude: newLatitude, longitude: newLongitude, locationName: ""};
 }
 
@@ -85,17 +94,15 @@ function calculateBearing(start: Coordinate, end: Coordinate): number {
   const startLngRad = toRadians(start.longitude);
   const endLatRad = toRadians(end.latitude);
   const endLngRad = toRadians(end.longitude);
-
   const dLng = endLngRad - startLngRad;
-
   const x = Math.sin(dLng) * Math.cos(endLatRad);
   const y = Math.cos(startLatRad) * Math.sin(endLatRad) -
     Math.sin(startLatRad) * Math.cos(endLatRad) * Math.cos(dLng);
 
-  const bearing = Math.atan2(x, y);
-
-  return (toDegrees(bearing) + 360) % 360; // Convert bearing to degrees and normalize to [0, 360)
+  const bearingRad = Math.atan2(x, y);
+  return (bearingRad < 0) ? (bearingRad + 2 * Math.PI) : bearingRad; //normalize to 0 - 2*PI
 }
+
 
 function projectPointToLine(point: Coordinate, lineStart: Coordinate, lineEnd: Coordinate): Coordinate {
   const distanceLineStartToPoint = haversine(lineStart, point);

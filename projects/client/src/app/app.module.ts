@@ -20,13 +20,23 @@ import { MapComponent } from './map/map.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import 'aframe';
+import 'ar.js';
+import { GpsNewEntityPlaceDirective } from './directives/gps-new-entity-place.directive';
+import { PositionDirective } from './directives/position.directive';
+import { AnimationDirective } from './directives/animation.directive';
+import { GltfModelDirective } from './directives/gltf-model.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
     CameraComponent,
-    MapComponent
+    MapComponent,
+    GpsNewEntityPlaceDirective,
+    PositionDirective,
+    AnimationDirective,
+    GltfModelDirective
   ],
   imports: [
     BrowserModule,

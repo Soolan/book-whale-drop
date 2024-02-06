@@ -6,10 +6,10 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MapService} from '@shared-services/map.service';
 import {Coordinate, Whale} from '@shared-models/whale';
+import {HelperService} from '../services/helper.service';
 
 @Component({
   selector: 'app-map',
@@ -27,18 +27,18 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
   isInitialized = false;
 
   constructor(
+    private helperService: HelperService,
     private mapService: MapService,
     private snackBar: MatSnackBar,
-    private firestore: Firestore
   ) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.userLocation = await this.getUserLocation();
+    this.userLocation = await this.helperService.getUserLocation();
     this.flyingWhales = this.userLocation ?
-      await this.getNearbyWhales() :
-      await this.getWhales(true);
-    this.retiredWhales = await this.getWhales(false); // changed to retired
+      await this.helperService.getNearbyWhales(this.userLocation, true) :
+      await this.helperService.getWhales(true);
+    this.retiredWhales = await this.helperService.getWhales(false); // changed to retired
   }
 
   ngAfterViewInit() {
@@ -51,54 +51,6 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
       this.isInitialized = true;
     }
   }
-
-  async getWhales(flying: boolean): Promise<Whale[]> {
-    const whalesRef = collection(this.firestore, 'whales');
-    const q = query(
-      whalesRef,
-      where("timestamps.deletedAt", flying ? "==" : ">", 0),
-      orderBy(flying ? "timestamps.updatedAt" : "timestamps.deletedAt", "desc"),
-      limit(10)
-    );
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => doc.data() as Whale);
-  }
-
-  async getUserLocation(): Promise<Coordinate | undefined> {
-    return new Promise<Coordinate | undefined>((resolve) => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const userLocation: Coordinate = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              locationName: '' // TODO: get location name via reverse geocoding
-            };
-            resolve(userLocation);
-          },
-          (error) => {
-            this.snackBar.open(error.message, 'X', {duration: 3000});
-            resolve(undefined);
-          },
-          {enableHighAccuracy: true, timeout: 5000, maximumAge: 60000}
-        );
-      } else {
-        this.snackBar.open('Geolocation is not supported by this browser.', 'X', {duration: 3000});
-        resolve(undefined);
-      }
-    });
-  }
-
-  async getNearbyWhales(): Promise<Whale[]> {
-    const whales = await this.getWhales(true);
-    return whales.map((whale) => ({
-      whale,
-      distance: this.mapService.calculateDistanceToLine(this.userLocation!, whale.lastSeen, whale.path[whale.completedSteps]),
-    }))
-      .sort((a, b) => a.distance - b.distance)
-      .map((item) => item.whale);
-  }
-
 
   setMarkers(isActive: boolean) {
     const whale =

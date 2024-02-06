@@ -6,7 +6,7 @@ export const NEW_WHALE: Whale = {
   size: WhaleSize.Large,
   description: 'Friendly nordic whale',
   altitude: 50,
-  speed: 1,
+  speed: 60,
   views: 0,
   path: [
     { latitude: -36.8485, longitude: 174.7633 , locationName: "Auckland, New Zealand" },
