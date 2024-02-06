@@ -1,15 +1,20 @@
-import { Directive, Input, OnInit, ElementRef } from '@angular/core';
+import { Directive, Input, ElementRef, Renderer2, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[appGltfModel]'
 })
 export class GltfModelDirective implements OnInit {
-  @Input() modelPath: string; // Pass the path to the GLTF model from the parent component
+  @Input() set appGltfModel(modelPath: string) {
+    this.modelPath = modelPath;
+  }
 
-  constructor(private el: ElementRef) {}
+  private modelPath: string = '/assets/whale.gltf';
+
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit() {
-    // Apply the model path to the element
-    this.el.nativeElement.setAttribute('gltf-model', this.modelPath);
+    // Apply the model path and animation-mixer to the element
+    this.renderer.setAttribute(this.el.nativeElement, 'gltf-model', this.modelPath);
+    this.renderer.setAttribute(this.el.nativeElement, 'animation-mixer', '');
   }
 }

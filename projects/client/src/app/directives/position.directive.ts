@@ -1,4 +1,3 @@
-// position.directive.ts
 import { Directive, Input, OnChanges, SimpleChanges, ElementRef } from '@angular/core';
 
 @Directive({

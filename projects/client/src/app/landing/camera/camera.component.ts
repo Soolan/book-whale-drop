@@ -45,7 +45,7 @@ export class CameraComponent implements AfterViewInit {
   }
 
   updateProgress(whale: Whale): void {
-    const intervalDuration = 1000; // Update every 5 seconds (adjust as needed)
+    const intervalDuration = 1000; // Update every 1 seconds
     const nextPoint = whale.path[whale.completedSteps + 1];
 
     if (nextPoint) {
@@ -55,7 +55,7 @@ export class CameraComponent implements AfterViewInit {
       const totalDuration = (distance / whale.speed) * 3600;
 
       setInterval(() => {
-        // Update the progress value based on elapsed time
+        // Update the progress value based on elapsed time (every 1 second)
         this.progress = (this.progress + (intervalDuration / 1000)) % totalDuration;
       }, intervalDuration);
     } else {

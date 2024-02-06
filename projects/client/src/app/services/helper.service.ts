@@ -64,14 +64,15 @@ export class HelperService {
   }
 
 
-  lerp(start: number, end: number, t: number): number {
-    return start * (1 - t) + end * t;
-  }
 
   interpolatePosition(lastSeen: Coordinate, nextStep: Coordinate, progress: number): string {
     const interpolatedLatitude = this.lerp(lastSeen.latitude, nextStep.latitude, progress);
     const interpolatedLongitude = this.lerp(lastSeen.longitude, nextStep.longitude, progress);
     return `${interpolatedLatitude} ${interpolatedLongitude} 0`;
+  }
+
+  lerp(start: number, end: number, t: number): number {
+    return start * (1 - t) + end * t;
   }
 
   haversine(lastSeen: Coordinate, target: Coordinate): number {

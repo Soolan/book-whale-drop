@@ -1,20 +1,16 @@
 <div class="camera">
   <video #videoElement></video>
-
   <a-scene vr-mode-ui='enabled: false'
            arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false'
            renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 50'></a-camera>
-
-    <!-- Load the 3D whale model from the assets folder -->
+    <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 5000'></a-camera>
     <a-entity *ngFor="let whale of data.closestWhales"
-              [gltf-model]="'/assets/whale.gltf'"
-              [animation]="{ property: 'rotation', to: '0 360 0', loop: true, dur: 5000 }"
+              appGltfModel
               [gps-new-entity-place]="{latitude: whale.lastSeen.latitude, longitude: whale.lastSeen.longitude}"
               [position]="calculateSmoothPosition(whale, progress)">
     </a-entity>
-  </a-scene>
 
+  </a-scene>
   <button mat-icon-button mat-dialog-close>
     <mat-icon>close</mat-icon>
   </button>
