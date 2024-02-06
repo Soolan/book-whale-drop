@@ -163,7 +163,10 @@
               "projects/shared/src/lib/styles/whaledrop-theme.scss",
               "./node_modules/leaflet/dist/leaflet.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/aframe/dist/aframe-master.min.js",
+              "node_modules/ar.js/aframe/build/aframe-ar-nft.js"
+            ]
           },
           "configurations": {
             "production": {
