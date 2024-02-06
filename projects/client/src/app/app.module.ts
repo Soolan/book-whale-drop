@@ -24,6 +24,8 @@ import 'aframe';
 import 'ar.js';
 import { GpsNewEntityPlaceDirective } from './directives/gps-new-entity-place.directive';
 import { PositionDirective } from './directives/position.directive';
+import { AnimationDirective } from './directives/animation.directive';
+import { GltfModelDirective } from './directives/gltf-model.directive';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { PositionDirective } from './directives/position.directive';
     CameraComponent,
     MapComponent,
     GpsNewEntityPlaceDirective,
-    PositionDirective
+    PositionDirective,
+    AnimationDirective,
+    GltfModelDirective
   ],
   imports: [
     BrowserModule,

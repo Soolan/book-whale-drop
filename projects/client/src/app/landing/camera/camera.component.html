@@ -6,9 +6,10 @@
            renderer='antialias: true; alpha: true'>
     <a-camera gps-new-camera='gpsMinDistance: 5; gpsMaxDistance: 50'></a-camera>
 
+    <!-- Load the 3D whale model from the assets folder -->
     <a-entity *ngFor="let whale of data.closestWhales"
-              material='color: blue'
-              geometry='primitive: box'
+              [gltf-model]="'/assets/whale.gltf'"
+              [animation]="{ property: 'rotation', to: '0 360 0', loop: true, dur: 5000 }"
               [gps-new-entity-place]="{latitude: whale.lastSeen.latitude, longitude: whale.lastSeen.longitude}"
               [position]="calculateSmoothPosition(whale, progress)">
     </a-entity>
