@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,14 +20,13 @@ import { MapComponent } from './map/map.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import 'aframe';
-import 'ar.js';
 import { GpsNewEntityPlaceDirective } from './directives/gps-new-entity-place.directive';
 import { PositionDirective } from './directives/position.directive';
 import { AnimationDirective } from './directives/animation.directive';
 import { GltfModelDirective } from './directives/gltf-model.directive';
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     AppComponent,
     LandingComponent,
