@@ -3,7 +3,7 @@ import {Whale} from '@shared-models/whale';
 
 export const NEW_WHALE: Whale = {
   name: 'Willy',
-  size: WhaleSize.Large,
+  size: WhaleSize.Huge,
   description: 'Friendly nordic whale',
   altitude: 50,
   speed: 60,
