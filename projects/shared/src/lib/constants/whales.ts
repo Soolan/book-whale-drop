@@ -26,3 +26,34 @@ export const NEW_WHALE: Whale = {
     deletedAt: 0
   }
 }
+
+
+export const WHALE_SIZES: any[] = [
+  {
+    name: 'Small',
+    description: '10 meters (i.e Minke Whale: fit in shopping malls)'
+  },
+  {
+    name: 'Medium',
+    description: '15 meters (i.e Humpback Whale)'
+  },
+  {
+    name: 'Large',
+    description: '20 meters (i.e Sperm Whale)'
+  },
+  {
+    name: 'Huge',
+    description: '30 meters (i.e Blue Whale)'
+  },
+  {
+    name: 'Gigantic',
+    description: '100 meters (i.e Meta Whale)'
+  },
+  {
+    name: 'Colossal',
+    description: '500 meters (i.e WTF Whale)'
+  }
+];
+
+
+
