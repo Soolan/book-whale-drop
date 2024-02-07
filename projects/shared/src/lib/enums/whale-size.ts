@@ -1,5 +1,5 @@
 export enum WhaleSize {
-  Small,
+  Small, 
   Medium,
   Large,
   Huge,

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CameraComponent} from './camera/camera.component';
 import {MatDialog} from '@angular/material/dialog';
-import {Coordinate, Whale} from '@shared-models/whale';
+import {Location, Whale} from '@shared-models/whale';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {HelperService} from '../services/helper.service';
 
@@ -11,7 +11,7 @@ import {HelperService} from '../services/helper.service';
   styleUrl: './landing.component.scss'
 })
 export class LandingComponent implements OnInit {
-  userLocation: Coordinate | undefined; // Update the type based on your requirements
+  userLocation: Location | undefined; // Update the type based on your requirements
   whales: Whale[] = []; // Update the type based on your requirements
   constructor(
     private dialog: MatDialog,

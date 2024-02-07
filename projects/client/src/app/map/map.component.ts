@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MapService} from '@shared-services/map.service';
-import {Coordinate, Whale} from '@shared-models/whale';
+import {Location, Whale} from '@shared-models/whale';
 import {HelperService} from '../services/helper.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class MapComponent implements OnInit, AfterViewInit, AfterViewChecked {
   retiredWhales: Whale[] = [];
   selectedFlying = 0;
   selectedRetired = 0;
-  userLocation: Coordinate | undefined;
+  userLocation: Location | undefined;
   isInitialized = false;
 
   constructor(

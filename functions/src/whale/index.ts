@@ -1,4 +1,4 @@
-import {Coordinate, WhaleWithId} from "@shared-models/whale";
+import {Location, WhaleWithId} from "@shared-models/whale";
 import {logger} from "firebase-functions";
 import {firestore} from "firebase-admin";
 
@@ -59,7 +59,7 @@ async function processWhale(whale: WhaleWithId, db: firestore.Firestore): Promis
   }
 }
 
-function calculateNewLocation(current: Coordinate, nextStep: Coordinate, speed: number): Coordinate {
+function calculateNewLocation(current: Location, nextStep: Location, speed: number): Location {
   logger.debug(`Current location: ${current.latitude}, ${current.longitude}, next step: ${nextStep.latitude}, ${nextStep.longitude}, speed: ${speed}`);
   const distance = speed / 12; // Distance travelled in 5 minutes or 1/12 hour (scheduler runs every 5 min)
   const distanceRad = distance / EARTH_RADIUS;
@@ -67,7 +67,7 @@ function calculateNewLocation(current: Coordinate, nextStep: Coordinate, speed: 
   const currentLatRad = toRadians(current.latitude);
   const currentLngRad = toRadians(current.longitude);
   logger.debug(`currentLatRad: ${currentLatRad}, currentLngRad: ${currentLngRad}`);
-  
+
   const bearingRad = calculateBearing(current, nextStep);
   logger.debug(`bearingRad: ${bearingRad}`);
 
@@ -89,7 +89,7 @@ function calculateNewLocation(current: Coordinate, nextStep: Coordinate, speed: 
   return {latitude: newLatitude, longitude: newLongitude, locationName: ""};
 }
 
-function calculateBearing(start: Coordinate, end: Coordinate): number {
+function calculateBearing(start: Location, end: Location): number {
   const startLatRad = toRadians(start.latitude);
   const startLngRad = toRadians(start.longitude);
   const endLatRad = toRadians(end.latitude);
@@ -104,7 +104,7 @@ function calculateBearing(start: Coordinate, end: Coordinate): number {
 }
 
 
-function projectPointToLine(point: Coordinate, lineStart: Coordinate, lineEnd: Coordinate): Coordinate {
+function projectPointToLine(point: Location, lineStart: Location, lineEnd: Location): Location {
   const distanceLineStartToPoint = haversine(lineStart, point);
   const distanceLineStartToEnd = haversine(lineStart, lineEnd);
 
@@ -134,7 +134,7 @@ function toDegrees(radians: number): number {
 }
 
 // Helper function to calculate haversine distance between two points (in radians)
-function haversine(lastSeen: Coordinate, target: Coordinate): number {
+function haversine(lastSeen: Location, target: Location): number {
   const latitude = toRadians(target.latitude - lastSeen.latitude);
   const longitude = toRadians(target.longitude - lastSeen.longitude);
   const a =

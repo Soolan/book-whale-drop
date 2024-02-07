@@ -1,6 +1,6 @@
 import {ElementRef, Injectable} from '@angular/core';
 import * as L from 'leaflet';
-import {Coordinate, Whale} from '../models/whale';
+import {Location, Whale} from '../models/whale';
 import {
   END_MARKER_ICON,
   FLYING_EAST_WHALE_ICON,
@@ -33,7 +33,7 @@ export class MapService {
     }).addTo(this.map);
   }
 
-  addPathMarkers(path: Coordinate[]): void {
+  addPathMarkers(path: Location[]): void {
     // Clear previous markers and lines
     this.map.eachLayer((layer) => {
       if (layer instanceof L.Marker || layer instanceof L.Polyline) {
@@ -42,7 +42,7 @@ export class MapService {
     });
     const start = 0;
     const end = path.length - 1;
-    path.forEach((marker: Coordinate, index: number) => {
+    path.forEach((marker: Location, index: number) => {
       const popup = index == start ?
         `Start:<br/>${marker.locationName}` : index == end ?
           `End:<br/>${marker.locationName}` : `Step ${index+1}:<br/>${marker.locationName}`;
@@ -61,7 +61,7 @@ export class MapService {
     this.map.fitBounds(bounds);
   }
 
-  setPolylines(path: Coordinate[], completedSteps: number): void {
+  setPolylines(path: Location[], completedSteps: number): void {
     // Split the path into completed and remaining steps
     const completedPath = path.slice(0, completedSteps + 1);
     const currentLeg = path.slice(completedSteps, completedSteps + 2);
@@ -92,7 +92,7 @@ export class MapService {
     });
   }
 
-  addUserMarker(coordinate: Coordinate): void {
+  addUserMarker(coordinate: Location): void {
     // Add the whale marker to the map
     const userMarker =
       L.marker([coordinate.latitude, coordinate.longitude], {icon: L.icon(USER_ICON)})
@@ -108,7 +108,7 @@ export class MapService {
   }
 
   // Calculate the distance between user location and a line
-  calculateDistanceToLine(userLocation: Coordinate, lineStart: Coordinate, lineEnd: Coordinate): number {
+  calculateDistanceToLine(userLocation: Location, lineStart: Location, lineEnd: Location): number {
     const A = userLocation.longitude - lineStart.longitude;
     const B = userLocation.latitude - lineStart.latitude;
     const C = lineEnd.longitude - lineStart.longitude;

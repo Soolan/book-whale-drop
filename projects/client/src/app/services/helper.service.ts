@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Coordinate, WhaleWithId} from '@shared-models/whale';
+import {Location, WhaleWithId} from '@shared-models/whale';
 import {collection, Firestore, getDocs, limit, orderBy, query, where} from '@angular/fire/firestore';
 import {MapService} from '@shared-services/map.service';
 
@@ -27,12 +27,12 @@ export class HelperService {
     return querySnapshot.docs.map((doc) => ({...doc.data(), id: doc.id} as WhaleWithId));
   }
 
-  async getUserLocation(): Promise<Coordinate | undefined> {
-    return new Promise<Coordinate | undefined>((resolve) => {
+  async getUserLocation(): Promise<Location | undefined> {
+    return new Promise<Location | undefined>((resolve) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            const userLocation: Coordinate = {
+            const userLocation: Location = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               locationName: '', // TODO: get location name via reverse geocoding
@@ -52,7 +52,7 @@ export class HelperService {
     });
   }
 
-  async getNearbyWhales(userLocation: Coordinate, isFlying: boolean = true): Promise<WhaleWithId[]> {
+  async getNearbyWhales(userLocation: Location, isFlying: boolean = true): Promise<WhaleWithId[]> {
     const whales = await this.getWhales(isFlying);
     return whales
       .map((whale) => ({
@@ -65,7 +65,7 @@ export class HelperService {
 
 
 
-  interpolatePosition(lastSeen: Coordinate, nextStep: Coordinate, progress: number): string {
+  interpolatePosition(lastSeen: Location, nextStep: Location, progress: number): string {
     const interpolatedLatitude = this.lerp(lastSeen.latitude, nextStep.latitude, progress);
     const interpolatedLongitude = this.lerp(lastSeen.longitude, nextStep.longitude, progress);
     return `${interpolatedLatitude} ${interpolatedLongitude} 0`;
@@ -75,7 +75,7 @@ export class HelperService {
     return start * (1 - t) + end * t;
   }
 
-  haversine(lastSeen: Coordinate, target: Coordinate): number {
+  haversine(lastSeen: Location, target: Location): number {
     const earthRadius = 6371; // Earth's radius in kilometers
 
     const latitude = this.toRadians(target.latitude - lastSeen.latitude);
@@ -97,7 +97,7 @@ export class HelperService {
     return (degrees * Math.PI) / 180;
   }
 
-  extractCoordinate(positionString: string): Coordinate {
+  extractCoordinate(positionString: string): Location {
     const coordinates = positionString.split(' ').map(parseFloat);
     return {
       latitude: coordinates[0],

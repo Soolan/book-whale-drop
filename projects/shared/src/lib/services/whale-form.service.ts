@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {FormBuilder, FormGroup, UntypedFormArray, UntypedFormGroup, Validators} from '@angular/forms';
 import {WhaleSize} from '@shared-enums/whale-size';
-import {Coordinate} from '@shared-models/whale';
+import {Location} from '@shared-models/whale';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +60,7 @@ export class WhaleFormService {
   }
 
   // Patch the path array with a set of coordinates
-  patchPath(path: Coordinate[]): void {
+  patchPath(path: Location[]): void {
     for (const step of path) {
       const group = this.addStep();
       group.patchValue(step);

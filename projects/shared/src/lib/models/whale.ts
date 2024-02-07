@@ -7,13 +7,13 @@ export interface Whale {
   altitude: number;
   speed: number;
   views: number;
-  path: Coordinate[];
-  lastSeen: Coordinate;
+  path: Location[];
+  lastSeen: Location;
   completedSteps: number;
   timestamps: Timestamps;
 }
 
-export interface Coordinate {
+export interface Location {
   latitude: number;
   longitude: number;
   locationName?: string;
