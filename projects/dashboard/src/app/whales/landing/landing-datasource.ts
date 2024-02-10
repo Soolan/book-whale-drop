@@ -3,8 +3,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
-import {Whale} from '../../../../../shared/src/lib/models/whale';
-import {NEW_WHALE} from '../../../../../shared/src/lib/constants/whales';
+import {Whale} from '@shared-models/whale';
+import {NEW_WHALE} from '@shared-constants/whales';
 
 const WHALE_DATA: Whale[] = [NEW_WHALE];
 
