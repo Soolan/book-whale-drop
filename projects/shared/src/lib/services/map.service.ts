@@ -45,7 +45,7 @@ export class MapService {
     path.forEach((marker: Location, index: number) => {
       const popup = index == start ?
         `Start:<br/>${marker.locationName}` : index == end ?
-          `End:<br/>${marker.locationName}` : `Step ${index+1}:<br/>${marker.locationName}`;
+          `End:<br/>${marker.locationName}` : `Step ${index}:<br/>${marker.locationName}`;
       const iconOptions =
         index == start ? START_MARKER_ICON : index == end ? END_MARKER_ICON : STEP_MARKER_ICON;
       const icon = L.icon(iconOptions);
@@ -54,11 +54,24 @@ export class MapService {
         .addTo(this.map);
     });
 
-    const bounds = L.latLngBounds([
-      [path[start].latitude, path[start].longitude],
-      [path[end].latitude, path[end].longitude],
-    ]);
+    const bounds = this.calculateBounds(path);
     this.map.fitBounds(bounds);
+  }
+
+  calculateBounds(path: Location[]): L.LatLngBounds {
+    let minLat = 90; // Maximum latitude
+    let maxLat = -90; // Minimum latitude
+    let minLng = 180; // Maximum longitude
+    let maxLng = -180; // Minimum longitude
+
+    path.forEach((marker: Location) => {
+      minLat = Math.min(minLat, marker.latitude);
+      maxLat = Math.max(maxLat, marker.latitude);
+      minLng = Math.min(minLng, marker.longitude);
+      maxLng = Math.max(maxLng, marker.longitude);
+    });
+
+    return L.latLngBounds([[minLat, minLng], [maxLat, maxLng]]);
   }
 
   setPolylines(path: Location[], completedSteps: number): void {
