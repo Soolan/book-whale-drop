@@ -1,7 +1,6 @@
 import {ElementRef, Injectable} from '@angular/core';
 import * as L from 'leaflet';
-import {IconOptions, LatLng} from 'leaflet';
-import {Coordinate, Whale} from '../models/whale';
+import {Location, Whale} from '../models/whale';
 import {
   END_MARKER_ICON,
   FLYING_EAST_WHALE_ICON,
@@ -31,7 +30,7 @@ export class MapService {
     }).addTo(this.map);
   }
 
-  addPathMarkers(path: Coordinate[]): void {
+  addPathMarkers(path: Location[]): void {
     // Clear previous markers
     this.map.eachLayer((layer) => {
       if (layer instanceof L.Marker) {
@@ -40,7 +39,7 @@ export class MapService {
     });
     const start = 0;
     const end = path.length - 1;
-    path.forEach((marker: Coordinate, index: number) => {
+    path.forEach((marker: Location, index: number) => {
       const popup = index == start ?
         `Start:<br/>${marker.locationName}` : index == end ?
           `End:<br/>${marker.locationName}` : `Step ${index}:<br/>${marker.locationName}`;
@@ -52,24 +51,37 @@ export class MapService {
         .addTo(this.map);
     });
 
-    const bounds = L.latLngBounds([
-      [path[start].latitude, path[start].longitude],
-      [path[end].latitude, path[end].longitude],
-    ]);
+    const bounds = this.calculateBounds(path);
     this.map.fitBounds(bounds);
   }
 
-  setPolylines(path: Coordinate[], completedSteps: number): void {
+  calculateBounds(path: Location[]): L.LatLngBounds {
+    let minLat = 90; // Maximum latitude
+    let maxLat = -90; // Minimum latitude
+    let minLng = 180; // Maximum longitude
+    let maxLng = -180; // Minimum longitude
+
+    path.forEach((marker: Location) => {
+      minLat = Math.min(minLat, marker.latitude);
+      maxLat = Math.max(maxLat, marker.latitude);
+      minLng = Math.min(minLng, marker.longitude);
+      maxLng = Math.max(maxLng, marker.longitude);
+    });
+
+    return L.latLngBounds([[minLat, minLng], [maxLat, maxLng]]);
+  }
+
+  setPolylines(path: Location[], completedSteps: number): void {
     // Split the path into completed and remaining steps
     const completedPath = path.slice(0, completedSteps + 1);
     const currentLeg = path.slice(completedSteps, completedSteps + 2);
     const remainingPath = path.slice(completedSteps + 1);
-    const completedCoordinates = completedPath.map(c => L.latLng(c.latitude, c.longitude));
-    const currentCoordinates = currentLeg.map(c => L.latLng(c.latitude, c.longitude));
-    const remainingCoordinates = remainingPath.map(c => L.latLng(c.latitude, c.longitude));
-    L.polyline(completedCoordinates, { color: '#3c5aa8', weight: 3, dashArray: '10, 7' }).addTo(this.map);
-    L.polyline(currentCoordinates, { color: '#466dd3', weight: 4, dashArray: '10, 7' }).addTo(this.map);
-    L.polyline(remainingCoordinates, { color: '#6f88ca', weight: 2, dashArray: '5, 5' }).addTo(this.map);
+    const completedLocation = completedPath.map(c => L.latLng(c.latitude, c.longitude));
+    const currentLocation = currentLeg.map(c => L.latLng(c.latitude, c.longitude));
+    const remainingLocation = remainingPath.map(c => L.latLng(c.latitude, c.longitude));
+    L.polyline(completedLocation, { color: '#3c5aa8', weight: 3, dashArray: '10, 7' }).addTo(this.map);
+    L.polyline(currentLocation, { color: '#466dd3', weight: 4, dashArray: '10, 7' }).addTo(this.map);
+    L.polyline(remainingLocation, { color: '#6f88ca', weight: 2, dashArray: '5, 5' }).addTo(this.map);
   }
 
   addWhaleMarker(whale: Whale, isActive: boolean): void {
@@ -90,7 +102,7 @@ export class MapService {
     });
   }
 
-// Function to calculate the direction based on coordinates
+// Function to calculate the direction based on Location
   isFacingEast(whale: Whale): boolean {
     return (whale.completedSteps + 1 < whale.path.length) ?
       whale.path[whale.completedSteps + 1].longitude > whale.path[whale.completedSteps].longitude:
