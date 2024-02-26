@@ -76,8 +76,8 @@ export class LandingComponent implements AfterViewInit {
   add() {
     addDoc(collection(this.firestore, "whales"), NEW_WHALE)
       .then(docRef => {
-        this.snackbar.open('Document added successfully', 'X', {duration: 3000});
-        this.router.navigate(['whales', docRef.id]);
+        this.router.navigate(['whales', docRef.id]).then(r =>
+          this.snackbar.open('Document added successfully', 'X', {duration: 3000}));
       })
       .catch(error => this.snackbar.open(error.message, 'X', {duration: 6000}));
   }

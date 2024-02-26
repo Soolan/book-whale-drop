@@ -25,8 +25,8 @@ export class WhaleComponent implements OnInit {
     private firestore: Firestore,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute,
-    protected formService: WhaleFormService) {
-  }
+    protected formService: WhaleFormService
+  ) {}
 
 // After patching the form
   ngOnInit() {
