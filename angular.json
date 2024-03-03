@@ -164,7 +164,7 @@
               "./node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
-              "node_modules/aframe/dist/aframe-master.min.js",
+              "node_modules/aframe/dist/aframe-master.min.js"
             ]
           },
           "configurations": {
