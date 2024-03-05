@@ -82,21 +82,25 @@ export class MapService {
     const completedCoordinates = completedPath.map(c => L.latLng(c.latitude, c.longitude));
     const currentCoordinates = currentLeg.map(c => L.latLng(c.latitude, c.longitude));
     const remainingCoordinates = remainingPath.map(c => L.latLng(c.latitude, c.longitude));
-    L.polyline(completedCoordinates, { color: '#3c5aa8', weight: 3, dashArray: '10, 7' }).addTo(this.map);
-    L.polyline(currentCoordinates, { color: '#466dd3', weight: 4, dashArray: '10, 7' }).addTo(this.map);
-    L.polyline(remainingCoordinates, { color: '#6f88ca', weight: 2, dashArray: '5, 5' }).addTo(this.map);
+    L.polyline(completedCoordinates, {color: '#3c5aa8', weight: 3, dashArray: '10, 7'}).addTo(this.map);
+    L.polyline(currentCoordinates, {color: '#466dd3', weight: 4, dashArray: '10, 7'}).addTo(this.map);
+    L.polyline(remainingCoordinates, {color: '#6f88ca', weight: 2, dashArray: '5, 5'}).addTo(this.map);
   }
 
   addWhaleMarker(whale: Whale, isActive: boolean): void {
     // Set the whale icon based on the status and direction
-    const whaleIcon =  isActive ?
-        this.isFacingEast(whale) ? FLYING_EAST_WHALE_ICON : FLYING_WEST_WHALE_ICON :
-        this.isFacingEast(whale) ? RETIRED_EAST_WHALE_ICON : RETIRED_WEST_WHALE_ICON;
+    const whaleIcon = isActive ?
+      this.isFacingEast(whale) ? FLYING_EAST_WHALE_ICON : FLYING_WEST_WHALE_ICON :
+      this.isFacingEast(whale) ? RETIRED_EAST_WHALE_ICON : RETIRED_WEST_WHALE_ICON;
+    // Set the popup
+    const popup = `${whale.name} is travelling at ${whale.speed} km/h`;
+
 
     // Add the whale marker to the map
     const whaleMarker =
       L.marker([whale.lastSeen.latitude, whale.lastSeen.longitude], {icon: L.icon(whaleIcon)})
-      .addTo(this.map);
+        .bindPopup(popup)
+        .addTo(this.map);
 
     // Click event listener for the marker
     whaleMarker.on('click', () => {
@@ -116,7 +120,7 @@ export class MapService {
   // Calculate the direction based on coordinates
   isFacingEast(whale: Whale): boolean {
     return (whale.completedSteps + 1 < whale.path.length) ?
-      whale.path[whale.completedSteps + 1].longitude > whale.path[whale.completedSteps].longitude:
+      whale.path[whale.completedSteps + 1].longitude > whale.path[whale.completedSteps].longitude :
       whale.path[whale.completedSteps].longitude > whale.path[whale.completedSteps - 1].longitude;
   }
 
