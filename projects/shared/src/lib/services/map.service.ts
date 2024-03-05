@@ -90,10 +90,14 @@ export class MapService {
         this.isFacingEast(whale) ? FLYING_EAST_WHALE_ICON : FLYING_WEST_WHALE_ICON :
         this.isFacingEast(whale) ? RETIRED_EAST_WHALE_ICON : RETIRED_WEST_WHALE_ICON;
 
+    // Set the popup
+    const popup = `${whale.name} is travelling at ${whale.speed} km/h`;
+
     // Add the whale marker to the map
     const whaleMarker =
       L.marker([whale.lastSeen.latitude, whale.lastSeen.longitude], {icon: L.icon(whaleIcon)})
-      .addTo(this.map);
+        .bindPopup(popup)
+        .addTo(this.map);
 
     // Click event listener for the marker
     whaleMarker.on('click', () => {
